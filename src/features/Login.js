@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
-import { loginWithGoogle } from '../helpers/auth';
-import { firebaseAuth } from '../config/constants';
+import React, { Component } from "react";
+import { loginWithGoogle, onAuthStateChanged } from '../helpers/auth';
 
 const firebaseAuthKey = 'firebaseAuthInProgress';
 const appTokenKey = 'appToken';
@@ -19,7 +18,7 @@ export default class Login extends Component {
       this.props.history.push('/app/home');
       return;
     }
-    firebaseAuth().onAuthStateChanged((user) => {
+    onAuthStateChanged((user) => {
       if (user) {
         localStorage.removeItem(firebaseAuthKey);
         localStorage.setItem(appTokenKey, user.uid);
