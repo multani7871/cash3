@@ -1,8 +1,16 @@
-import React, { Component } from 'react';
-import { logout, deleteUser, getRedirectResult } from '../helpers/auth';
-import { createNewUser, deleteUserFromDB, doesUserExist, updateOAuthToken } from '../helpers/firestore';
+import React, { Component } from "react";
+import { logout, deleteUser, getRedirectResult } from "../helpers/auth";
+import {
+  createNewUser,
+  deleteUserFromDB,
+  doesUserExist,
+  updateOAuthToken,
+  getUserOAuthToken,
+  getUserCalID
+} from "../helpers/firestore";
+import axios from "axios";
 
-const appTokenKey = 'appToken';
+const appTokenKey = "appToken";
 export default class Home extends Component {
   constructor(props) {
     super(props);
