@@ -27,25 +27,25 @@ export default class Home extends Component {
   async handleOAuthToken() {
     try {
       let result = await getRedirectResult();
-        if (result.credential) {
-          // This gives you a Google Access` Token. You can use it to access the Google API.
-          const email = result.user.email;
-          const uid = localStorage.getItem(appTokenKey);
-          const OAuthToken = result.credential.accessToken;
+      if (result.credential) {
+        // This gives you a Google Access` Token. You can use it to access the Google API.
+        const email = result.user.email;
+        const uid = localStorage.getItem(appTokenKey);
+        const OAuthToken = result.credential.accessToken;
         const exists = await doesUserExist(uid);
-            if (exists) {
+        if (exists) {
           await updateOAuthToken(uid, OAuthToken);
-            } else {
+        } else {
           await createNewUser(uid, email, OAuthToken);
           await axios.post("/createCalendar", {
             OAuthToken: OAuthToken,
             uid: uid
           });
-            }
         }
+      }
     } catch (error) {
       console.log(error);
-  }
+    }
   }
 
   async handleLogout() {
@@ -67,7 +67,7 @@ export default class Home extends Component {
         deleteUserFromDB(localStorage.getItem(appTokenKey)),
         deleteUser()
       ]);
-        localStorage.removeItem(appTokenKey);
+      localStorage.removeItem(appTokenKey);
       this.props.history.push("/login");
       console.log("user deleted from firebase");
     } catch (error) {
