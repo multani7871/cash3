@@ -48,13 +48,10 @@ export default class Home extends Component {
   }
   }
 
-  handleLogout() {
-    logout()
-      .then(() => {
-        localStorage.removeItem(appTokenKey);
-        this.props.history.push('/login');
-        console.log('user signed out from firebase');
-      });
+  async handleLogout() {
+    await logout();
+    await localStorage.removeItem(appTokenKey);
+    await this.props.history.push("/login");
   }
 
   handleDeleteUser() {
