@@ -1,0 +1,18 @@
+{
+    "extends": [
+        "airbnb"
+    ],
+    "rules": {
+        "react-app/jsx-a11y/href-no-hash": "off",
+        "prefer-destructuring": "off",
+        "react/jsx-filename-extension": "off",
+        "class-methods-use-this": "off",
+        "no-console": "off",
+        "react/prop-types": "off",
+        "react/destructuring-assignment": "off"
+    },
+    "globals": {
+        "localStorage": true,
+        "fetch": true
+    }
+}
