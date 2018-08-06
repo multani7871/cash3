@@ -54,13 +54,25 @@ export default class Home extends Component {
     await this.props.history.push("/login");
   }
 
-  handleDeleteUser() {
-    Promise.all([deleteUserFromDB(localStorage.getItem(appTokenKey)), deleteUser()])
-      .then(() => {
-        localStorage.removeItem(appTokenKey);
-        this.props.history.push('/login');
-        console.log('user deleted from firebase');
+  async handleDeleteUser() {
+    try {
+      const uid = localStorage.getItem(appTokenKey);
+      const OAuthToken = await getUserOAuthToken(uid);
+      const calID = await getUserCalID(uid);
+      await axios.post("/deleteCalendar", {
+        OAuthToken: OAuthToken,
+        calID: calID
       });
+      await Promise.all([
+        deleteUserFromDB(localStorage.getItem(appTokenKey)),
+        deleteUser()
+      ]);
+        localStorage.removeItem(appTokenKey);
+      this.props.history.push("/login");
+      console.log("user deleted from firebase");
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
