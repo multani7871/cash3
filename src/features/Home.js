@@ -9,6 +9,8 @@ import {
   getUserCalID
 } from "../helpers/firestore";
 import axios from "axios";
+import PlaidLink from "react-plaid-link";
+import { PLAID_PUBLIC_KEY, PLAID_ENVIRONMENT, WEBHOOK_HOST } from "../helpers/credentials.json";
 
 const appTokenKey = "appToken";
 export default class Home extends Component {
@@ -18,6 +20,8 @@ export default class Home extends Component {
     this.handleLogout = this.handleLogout.bind(this);
     this.handleDeleteUser = this.handleDeleteUser.bind(this);
     this.handleOAuthToken = this.handleOAuthToken.bind(this);
+    this.handleOnSuccess = this.handleOnSuccess.bind(this);
+    this.exchangePublicToken = this.exchangePublicToken.bind(this);
   }
 
   componentDidMount() {
@@ -75,6 +79,27 @@ export default class Home extends Component {
     }
   }
 
+  async handleOnSuccess(token, metadata) {
+    const institution = metadata.institution;
+    this.exchangePublicToken(token, institution);
+  }
+
+  async exchangePublicToken(publicToken, institution) {
+    const uid = localStorage.getItem(appTokenKey);
+    const config = {
+      url: `/exchangePublicToken`,
+      payload: {
+        publicToken,
+        uid: uid,
+        institution,
+        webhook: `${WEBHOOK_HOST}plaidWebHook`
+      },
+    };
+    axios.post(config.url, config.payload)
+      .then(response => console.log(response.data))
+      .catch((error) => { console.log(error); });
+  }
+
   render() {
     return (
       <div>
@@ -85,6 +110,15 @@ export default class Home extends Component {
         <button type="submit" onClick={this.handleDeleteUser}>
           Delete User
         </button>
+        <PlaidLink
+          clientName="cashendar"
+          env={PLAID_ENVIRONMENT}
+          publicKey={PLAID_PUBLIC_KEY}
+          product={["auth", "transactions"]}
+          onSuccess={this.handleOnSuccess}
+        >
+          Connect bank
+        </PlaidLink>
       </div>
     );
   }
