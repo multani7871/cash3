@@ -1,4 +1,4 @@
-import { firebaseAuth, googleProvider } from '../config/constants';
+import { firebaseAuth, googleProvider } from './firebaseClient';
 
 export function loginWithGoogle() {
   return firebaseAuth().signInWithRedirect(googleProvider);
@@ -12,4 +12,8 @@ export function deleteUser() {
 }
 export function getRedirectResult() {
   return firebaseAuth().getRedirectResult();
+}
+
+export function onAuthStateChanged(callback) {
+  return firebaseAuth().onAuthStateChanged(callback)
 }
