@@ -24,24 +24,28 @@ export default class Home extends Component {
     this.handleOAuthToken();
   }
 
-  handleOAuthToken() {
-    getRedirectResult()
-      .then((result) => {
+  async handleOAuthToken() {
+    try {
+      let result = await getRedirectResult();
         if (result.credential) {
           // This gives you a Google Access` Token. You can use it to access the Google API.
           const email = result.user.email;
           const uid = localStorage.getItem(appTokenKey);
           const OAuthToken = result.credential.accessToken;
-          doesUserExist(uid)
-          .then(function(exists) {
+        const exists = await doesUserExist(uid);
             if (exists) {
-              updateOAuthToken(uid, OAuthToken);
+          await updateOAuthToken(uid, OAuthToken);
             } else {
-              createNewUser(uid, email, OAuthToken);
+          await createNewUser(uid, email, OAuthToken);
+          await axios.post("/createCalendar", {
+            OAuthToken: OAuthToken,
+            uid: uid
+          });
             }
-          })
         }
-      });
+    } catch (error) {
+      console.log(error);
+  }
   }
 
   handleLogout() {
