@@ -9,6 +9,7 @@
     "googleapis": "latest",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
+    "react-plaid-link": "^1.0.2",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "1.1.4"
