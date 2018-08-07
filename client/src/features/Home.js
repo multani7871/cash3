@@ -91,7 +91,7 @@ export default class Home extends Component {
         publicToken,
         uid: uid,
         institution,
-        webhook: `${process.env.REACT_APP_WEBHOOK_HOST}plaidWebHook`
+        webhook: `${process.env.REACT_APP_WEBHOOK}`
       },
     };
     try {
