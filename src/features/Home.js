@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { logout, deleteUser, getRedirectResult } from "../helpers/auth";
+import { logout, deleteUserFromAuth, getRedirectResult, deleteUserFromAuth } from "../helpers/auth";
 import {
   createNewUser,
   deleteUserFromDB,
@@ -71,7 +71,7 @@ export default class Home extends Component {
         calID: calID
       });
       await deleteUserFromDB(localStorage.getItem(appTokenKey));
-      await deleteUser();
+      await deleteUserFromAuth();
       this.handleLogout();
     } catch (error) {
       console.log(error);

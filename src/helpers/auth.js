@@ -7,7 +7,7 @@ export function logout() {
   return firebaseAuth().signOut();
 }
 
-export function deleteUser() {
+export function deleteUserFromAuth() {
   return firebaseAuth().currentUser.delete();
 }
 export function getRedirectResult() {
