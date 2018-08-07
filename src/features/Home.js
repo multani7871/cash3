@@ -53,9 +53,13 @@ export default class Home extends Component {
   }
 
   async handleLogout() {
-    await logout();
-    await localStorage.removeItem(appTokenKey);
-    await this.props.history.push("/login");
+    try {
+      await logout();
+      await localStorage.removeItem(appTokenKey);
+      await this.props.history.push("/login"); 
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async handleDeleteUser() {
@@ -67,13 +71,9 @@ export default class Home extends Component {
         OAuthToken: OAuthToken,
         calID: calID
       });
-      await Promise.all([
-        deleteUserFromDB(localStorage.getItem(appTokenKey)),
-        deleteUser()
-      ]);
-      localStorage.removeItem(appTokenKey);
-      this.props.history.push("/login");
-      console.log("user deleted from firebase");
+      await deleteUserFromDB(localStorage.getItem(appTokenKey));
+      await deleteUser();
+      this.handleLogout();
     } catch (error) {
       console.log(error);
     }
@@ -95,9 +95,11 @@ export default class Home extends Component {
         webhook: `${WEBHOOK_HOST}plaidWebHook`
       },
     };
-    axios.post(config.url, config.payload)
-      .then(response => console.log(response.data))
-      .catch((error) => { console.log(error); });
+    try {
+      await axios.post(config.url, config.payload) 
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
