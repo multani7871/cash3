@@ -13,6 +13,7 @@
     "logs": "firebase functions:log"
   },
   "dependencies": {
+    "envkey": "^1.1.2",
     "firebase": "^5.3.1",
     "firebase-admin": "~5.13.0",
     "firebase-functions": "^2.0.0",

@@ -1,3 +1,4 @@
+require("envkey");
 const functions = require("firebase-functions");
 const googleCalendar = require("./googleCalendar");
 const { addNewCalendarToUser, addItemsToUser } = require("./firestore");
