@@ -17,6 +17,18 @@
     ],
     "rewrites": [
       {
+        "source": "/createCalendar",
+        "function": "createCalendar"
+      },
+      {
+        "source": "/deleteCalendar",
+        "function": "deleteCalendar"
+      },
+      {
+        "source": "/exchangePublicToken",
+        "function": "exchangePublicToken"
+      },
+      {
         "source": "**",
         "destination": "/index.html"
       }
