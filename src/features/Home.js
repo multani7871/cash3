@@ -10,7 +10,6 @@ import {
 } from "../helpers/firestore";
 import axios from "axios";
 import PlaidLink from "react-plaid-link";
-import { PLAID_PUBLIC_KEY, PLAID_ENVIRONMENT, WEBHOOK_HOST } from "../helpers/credentials.json";
 
 const appTokenKey = "appToken";
 export default class Home extends Component {
@@ -92,7 +91,7 @@ export default class Home extends Component {
         publicToken,
         uid: uid,
         institution,
-        webhook: `${WEBHOOK_HOST}plaidWebHook`
+        webhook: `${process.env.REACT_APP_WEBHOOK_HOST}plaidWebHook`
       },
     };
     try {
@@ -114,8 +113,8 @@ export default class Home extends Component {
         </button>
         <PlaidLink
           clientName="cashendar"
-          env={PLAID_ENVIRONMENT}
-          publicKey={PLAID_PUBLIC_KEY}
+          env={process.env.REACT_APP_PLAID_ENVIRONMENT}
+          publicKey={process.env.REACT_APP_PLAID_PUBLIC_KEY}
           product={["auth", "transactions"]}
           onSuccess={this.handleOnSuccess}
         >
