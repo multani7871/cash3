@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './registerServiceWorker';
 import { Redirect, Route, Switch } from 'react-router';
 import { Router } from 'react-router-dom';
 import createBrowserHistory from 'history/createBrowserHistory';
@@ -20,4 +20,4 @@ const Root = () => {
   )
 }
 ReactDOM.render(<Root />, document.getElementById('root'));
-registerServiceWorker();
+// registerServiceWorker();
