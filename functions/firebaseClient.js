@@ -1,14 +1,14 @@
 const firebase = require("firebase/app");
 require("firebase/auth");
 require("firebase/firestore");
-const creds = require("./credentials.json");
 
 const config = {
-  apiKey: creds.APIKEY,
-  authDomain: creds.AUTHDOMAIN, 
-  databaseURL: creds.DATABASEURL,
-  projectId: creds.PROJECTID
+  apiKey: process.env.REACT_APP_APIKEY,
+  authDomain: process.env.REACT_APP_AUTHDOMAIN, 
+  databaseURL: process.env.REACT_APP_DATABASEURL,
+  projectId: process.env.REACT_APP_PROJECTID
 };
+
 firebase.initializeApp(config);
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 googleProvider.addScope('https://www.googleapis.com/auth/calendar');

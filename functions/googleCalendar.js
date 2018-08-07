@@ -1,11 +1,10 @@
 const { google } = require('googleapis');
 const { promisify } = require('util');
-const creds = require('./credentials.json');
 
 const oauth2Client = new google.auth.OAuth2(
-  creds.client_id,
-  creds.client_secret,
-  creds.redirect_uris,
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  process.env.REDIRECT_URIS,
 );
 
 const calendar = google.calendar({ version: "v3", auth: oauth2Client });
