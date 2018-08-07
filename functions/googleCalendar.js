@@ -33,13 +33,14 @@ exports.createCalendar = async oauthToken => {
   const calConfig = {
     resource: { summary: "Cashendar" }
   };
+  let calData;
   try {
     const newCal = await insertAsync(calConfig);
-    const calData = newCal.data;
-    return calData;
+    calData = newCal.data;
   } catch (error) {
     console.log(error.errors);
   }
+  return calData;
 };
 
 exports.deleteCalendar = async (oauthToken, calID) => {
@@ -48,13 +49,14 @@ exports.deleteCalendar = async (oauthToken, calID) => {
   const calConfig = {
     calendarId: calID
   };
+  let calData
   try {
     const newCal = await deleteAsync(calConfig);
-    const calData = newCal.data;
-    return `${calID} + ${calData} deleted`;
+    calData = newCal.data;
   } catch (error) {
     console.log(error);
   }
+  return `${calID} + ${calData} deleted`;
 };
 
 // export {
