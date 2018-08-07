@@ -15,6 +15,7 @@
     "react-scripts": "1.1.4"
   },
   "scripts": {
+    "getEnvKey": "curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash",
     "start": "eval $(envkey-source) && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
