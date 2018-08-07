@@ -1,5 +1,4 @@
 const plaid = require("plaid");
-
 const {
   PLAID_CLIENT_ID,
   PLAID_SECRET,
