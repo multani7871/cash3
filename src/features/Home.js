@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { logout, deleteUserFromAuth, getRedirectResult, deleteUserFromAuth } from "../helpers/auth";
+import { logout, deleteUserFromAuth, getRedirectResult, reloadUser } from "../helpers/auth";
 import {
   createNewUser,
   deleteUserFromDB,
@@ -40,7 +40,7 @@ export default class Home extends Component {
           await updateOAuthToken(uid, OAuthToken);
         } else {
           await createNewUser(uid, email, OAuthToken);
-          await axios.post("/createCalendar", {
+          await axios.post(`${process.env.REACT_APP_HOST}/createCalendar`, {
             OAuthToken: OAuthToken,
             uid: uid
           });
@@ -55,18 +55,19 @@ export default class Home extends Component {
     try {
       await logout();
       await localStorage.removeItem(appTokenKey);
-      await this.props.history.push("/login"); 
+      await this.props.history.push("/login");
     } catch (error) {
       console.log(error);
     }
   }
 
   async handleDeleteUser() {
+    await reloadUser();
     try {
       const uid = localStorage.getItem(appTokenKey);
       const OAuthToken = await getUserOAuthToken(uid);
       const calID = await getUserCalID(uid);
-      await axios.post("/deleteCalendar", {
+      await axios.post(`${process.env.REACT_APP_HOST}/deleteCalendar`, {
         OAuthToken: OAuthToken,
         calID: calID
       });
@@ -86,16 +87,16 @@ export default class Home extends Component {
   async exchangePublicToken(publicToken, institution) {
     const uid = localStorage.getItem(appTokenKey);
     const config = {
-      url: `/exchangePublicToken`,
+      url: `${process.env.REACT_APP_HOST}/exchangePublicToken`,
       payload: {
         publicToken,
         uid: uid,
         institution,
         webhook: `${process.env.REACT_APP_WEBHOOK}`
-      },
+      }
     };
     try {
-      await axios.post(config.url, config.payload) 
+      await axios.post(config.url, config.payload);
     } catch (error) {
       console.log(error);
     }
