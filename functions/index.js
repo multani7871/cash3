@@ -41,6 +41,7 @@ exports.deleteCalendar = functions.https.onRequest(async (req, res) => {
 });
 
 exports.exchangePublicToken = functions.https.onRequest(async (req, res) => {
+  const exchangePublicToken = async () => {
   const publicToken = req.body.publicToken;
   const uid = req.body.uid;
   const institutionName = req.body.institution.name;
@@ -64,6 +65,10 @@ exports.exchangePublicToken = functions.https.onRequest(async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+  };
+  cors(req, res, exchangePublicToken);
+});
+
 exports.nonsense = functions.https.onRequest(async (req, res) => {
   const nonsense = () => {
     res.status(200).send("hey ya");
