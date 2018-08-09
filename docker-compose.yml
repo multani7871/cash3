@@ -9,9 +9,11 @@ services:
     ports:
       - "3000:3000"
     env_file: ./.env
+    depends_on:
+      - functions
   functions:
     build: ./functions
-    command: firebase serve --only functions --host 0.0.0.0 --token ${FIREBASE_FUNCTIONS_CONTAINER_TOKEN}
+    command: ./node_modules/firebase-tools/bin/firebase serve --only functions --host 0.0.0.0 --token ${FIREBASE_FUNCTIONS_CONTAINER_TOKEN}
     volumes:
       - .:/usr/src/app/
       - /usr/src/app/node_modules
