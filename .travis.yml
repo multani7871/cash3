@@ -6,6 +6,7 @@ install:
 - npm install
 - cd ..
 - npm install
+- npm run build
 cache:
   directories:
   - node_modules
