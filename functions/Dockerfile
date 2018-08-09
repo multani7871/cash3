@@ -4,11 +4,10 @@ RUN mkdir -p /usr/src/app
 
 WORKDIR /usr/src/app
 
-COPY package.json /usr/src/app/
 RUN apk add --no-cache curl
 RUN apk add --no-cache bash
 RUN curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash
-RUN npm install -g firebase-tools
+COPY package.json /usr/src/app/
 RUN npm install
 RUN npm rebuild
 
