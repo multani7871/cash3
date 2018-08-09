@@ -6,11 +6,11 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "serve": "firebase serve --only functions",
-    "shell": "firebase functions:shell",
+    "serve": "./node_modules/firebase-tools/bin/firebase serve --only functions",
+    "shell": "./node_modules/firebase-tools/bin/firebase functions:shell",
     "start": "npm run shell",
-    "deploy": "firebase deploy --only functions",
-    "logs": "firebase functions:log"
+    "deploy": "./node_modules/firebase-tools/bin/firebase deploy --only functions",
+    "logs": "./node_modules/firebase-tools/bin/firebase functions:log"
   },
   "dependencies": {
     "cors": "^2.8.4",
@@ -19,7 +19,8 @@
     "firebase-admin": "latest",
     "firebase-functions": "latest",
     "googleapis": "^32.0.0",
-    "plaid": "latest"
+    "plaid": "latest",
+    "firebase-tools": "latest"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
