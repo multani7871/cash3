@@ -77,3 +77,11 @@ exports.nonsense = functions.https.onRequest(async (req, res) => {
   };
   cors(req, res, nonsense);
 });
+
+exports.plaidWebHookDev = functions.https.onRequest(async (req, res) => {
+  const plaidWebHookDev = () => {
+    const payload = req.body
+    res.status(200).send(`webhook hit w/ ${payload}`);
+  };
+  cors(req, res, plaidWebHookDev);
+});
