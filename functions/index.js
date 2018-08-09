@@ -16,6 +16,7 @@ const plaidClient = require("./plaidClient");
 // });
 
 exports.createCalendar = functions.https.onRequest(async (req, res) => {
+  const createCalendar = async () => {
   const token = req.body.OAuthToken;
   const uid = req.body.uid;
   try {
@@ -26,6 +27,8 @@ exports.createCalendar = functions.https.onRequest(async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+  };
+  cors(req, res, createCalendar);
 });
 
 exports.deleteCalendar = functions.https.onRequest(async (req, res) => {
