@@ -62,8 +62,8 @@ export default class Home extends Component {
   }
 
   async handleDeleteUser() {
-    await reloadUser();
     try {
+      await reloadUser();
       const uid = localStorage.getItem(appTokenKey);
       const OAuthToken = await getUserOAuthToken(uid);
       const calID = await getUserCalID(uid);
