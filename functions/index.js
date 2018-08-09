@@ -64,4 +64,9 @@ exports.exchangePublicToken = functions.https.onRequest(async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+exports.nonsense = functions.https.onRequest(async (req, res) => {
+  const nonsense = () => {
+    res.status(200).send("hey ya");
+  };
+  cors(req, res, nonsense);
 });
