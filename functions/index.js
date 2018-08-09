@@ -29,8 +29,12 @@ exports.createCalendar = functions.https.onRequest(async (req, res) => {
 });
 
 exports.deleteCalendar = functions.https.onRequest(async (req, res) => {
+  const deleteCalendar = async () => {
   const token = req.body.OAuthToken;
   const calID = req.body.calID;
+    if (!calID) {
+      res.status(200).send(`${calID} not found`);
+    }
   let result;
   try {
     result = await googleCalendar.deleteCalendar(token, calID);
@@ -38,6 +42,8 @@ exports.deleteCalendar = functions.https.onRequest(async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+  };
+  cors(req, res, deleteCalendar);
 });
 
 exports.exchangePublicToken = functions.https.onRequest(async (req, res) => {
