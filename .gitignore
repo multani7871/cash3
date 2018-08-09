@@ -15,6 +15,7 @@ node_modules
 
 # misc
 package-lock.json
+functions/package-lock.json
 credentials.json
 .DS_Store
 .env
