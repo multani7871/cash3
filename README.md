@@ -2,6 +2,7 @@
 1. Get provisioned in EnvKey by HM
 1. Get developer key fron EnvKey
 1. Initialize .env file and Add developer key to .env as per .env.example
+1. Get the Firebase container token from EnvKey and save to the .env file
 1. run `docker-compose up` from repo root directory
 
 
