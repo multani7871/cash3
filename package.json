@@ -11,14 +11,16 @@
     "react-plaid-link": "^1.0.2",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.4"
+    "react-scripts": "1.1.4",
+    "firebase-tools": "latest"
   },
   "scripts": {
     "getEnvKey": "curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash",
     "start": "eval $(envkey-source) && react-scripts start",
     "build": "npm run getEnvKey && eval $(envkey-source) && react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "./node_modules/firebase-tools/bin/firebase deploy --token 1/Efl5VXzv1V56dU7T2jFeJOgfhTNCP6GbhWQkUjOth-w"
   },
   "devDependencies": {
     "eslint": "^5.3.0",
