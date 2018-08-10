@@ -58,11 +58,3 @@ exports.deleteCalendar = async (oauthToken, calID) => {
   }
   return `${calID} + ${calData} deleted`;
 };
-
-// export {
-//   createCalendar,
-//   deleteCalendar,
-//   listEvents
-// }
-
-// exports.listEvents = listEvents;
