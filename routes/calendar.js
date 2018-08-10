@@ -1,7 +1,7 @@
 const googleCalendar = require('../clients/googleClient');
 const { addNewCalendarToUser } = require('../clients/firestore');
 
-const createCalendar = async (req, res) => {
+exports.createCalendar = async (req, res) => {
   if (req.body === undefined) {
     res.status(200).send('no stuff');
     return;
@@ -18,7 +18,7 @@ const createCalendar = async (req, res) => {
   }
 };
 
-const deleteCalendar = async (req, res) => {
+exports.deleteCalendar = async (req, res) => {
   const token = req.body.OAuthToken;
   const calID = req.body.calID;
   if (!calID) {
@@ -31,9 +31,4 @@ const deleteCalendar = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-};
-
-module.exports = {
-  createCalendar,
-  deleteCalendar,
 };
