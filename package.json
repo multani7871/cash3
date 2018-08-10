@@ -23,7 +23,7 @@
     "getEnvKey": "curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash",
     "develop": "eval $(envkey-source) && react-scripts start",
     "start": "npm run build && nodemon server.js",
-    "build": "npm run getEnvKey && eval $(envkey-source) && react-scripts build",
+    "build": "curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash && eval $(envkey-source) && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
