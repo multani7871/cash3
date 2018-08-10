@@ -1,8 +1,8 @@
 const { addItemsToUser } = require('../clients/firestore');
-const plaidClient = require('../clients/plaidClient');
+const { plaidClient } = require('../clients/plaidClient');
 const { getAllItems, deleteItemFromDB } = require('../clients/firestore');
 
-const exchangePublicToken = async (req, res) => {
+exports.exchangePublicToken = async (req, res) => {
   const publicToken = req.body.publicToken;
   const uid = req.body.uid;
   const institutionName = req.body.institution.name;
@@ -28,14 +28,13 @@ const exchangePublicToken = async (req, res) => {
   }
 };
 
-const plaidWebHookDev = (req, res) => {
+exports.plaidWebHookDev = (req, res) => {
   const payload = req.body;
   res.status(200).send(`webhook hit w/ ${payload}`);
 };
 
-const deleteAllItems = async (req, res) => {
+exports.deleteAllItems = async (req, res) => {
   const uid = req.body.uid;
-  // const uid = '5ImydqEWAlY3fSXNbh18GxVAdxl2';
   let allItems;
   try {
     allItems = await getAllItems(uid);
@@ -48,7 +47,6 @@ const deleteAllItems = async (req, res) => {
     try {
       const plaidDeletionStatus = await plaidClient.deleteItem(item.accessToken);
       if (plaidDeletionStatus.deleted) {
-        console.log(plaidDeletionStatus);
         await deleteItemFromDB(uid, itemId);
       }
     } catch (error) {
@@ -66,10 +64,4 @@ const deleteAllItems = async (req, res) => {
   }
 
   res.status(200).send(messageToSend);
-};
-
-module.exports = {
-  exchangePublicToken,
-  plaidWebHookDev,
-  deleteAllItems,
 };
