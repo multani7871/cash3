@@ -126,6 +126,10 @@ export default class Home extends Component {
         >
           Connect bank
         </PlaidLink>
+
+        <div className="Environment">
+          <b>Firebase host</b><br /> {process.env.REACT_APP_HOST}
+        </div>
       </div>
     );
   }
