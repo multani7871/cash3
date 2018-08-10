@@ -6,8 +6,8 @@ steps:
 #   secretEnv: ['ENVKEY']
 # - id: 'add source'
 #   name: 'gcr.io/cloud-builders/npm'
-#   args: ['run', 'inject']
-#   secretEnv: ['ENVKEY']
+#   args: ['run', 'dep']
+#   secretEnv: ['ENVKEY', 'FIREBASE_TOKEN']
 # - id: 'eval'
 #   name: 'gcr.io/cloud-builders/npm'
 #   args: ['-c', '/usr/local/bin/envkey-source']
@@ -17,24 +17,34 @@ steps:
 #   entrypoint: 'bash'
 #   args: ['-c', 'curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash && eval $(envkey-source) && printenv']
 #   secretEnv: ['ENVKEY']
-- id: 'install client node_modules'
-  name: 'gcr.io/cloud-builders/npm'
-  args: ['install']
-  secretEnv: ['ENVKEY']
+# - id: 'install client node_modules'
+#   name: 'gcr.io/cloud-builders/npm'
+#   args: ['install']
+#   secretEnv: ['ENVKEY']
 - id: 'install functions node_modules'
   name: 'gcr.io/cloud-builders/npm'
   dir: 'functions'
   args: ['install']
   secretEnv: ['ENVKEY']
-- id: 'build client'
-  name: 'gcr.io/cloud-builders/npm'
-  args: ['run', 'build']
-  secretEnv: ['ENVKEY']
+# - id: 'build client'
+#   name: 'gcr.io/cloud-builders/npm'
+#   args: ['run', 'build']
+#   secretEnv: ['ENVKEY']
+# - id: 'functions rebuild'
+#   name: 'gcr.io/cloud-builders/npm'
+#   dir: 'functions'
+#   args: ['rebuild']
+#   secretEnv: ['ENVKEY']
+# - id: 'deploy'
+#   name: 'gcr.io/cloud-builders/npm'
+#   entrypoint: 'bash'
+#   dir: 'functions'
+#   args: ['-c', './node_modules/firebase-tools/bin/firebase deploy --token $$FIREBASE_TOKEN']
+#   secretEnv: ['ENVKEY', 'FIREBASE_TOKEN']
 - id: 'deploy'
   name: 'gcr.io/cloud-builders/npm'
-  entrypoint: 'bash'
   dir: 'functions'
-  args: ['-c', './node_modules/firebase-tools/bin/firebase deploy --token $$FIREBASE_TOKEN']
+  args: ['run', 'deploy']
   secretEnv: ['ENVKEY', 'FIREBASE_TOKEN']
 
 secrets:
