@@ -1,12 +1,11 @@
 require("envkey");
 const functions = require("firebase-functions");
-const googleCalendar = require("./googleCalendar");
-const { addNewCalendarToUser, addItemsToUser } = require("./firestore");
-const plaidClient = require("./plaidClient");
-
 const cors = require("cors")({
   origin: true
 });
+const googleCalendar = require("./googleCalendar");
+const { addNewCalendarToUser, addItemsToUser } = require("./firestore");
+const plaidClient = require("./plaidClient");
 
 exports.createCalendar = functions.https.onRequest(async (req, res) => {
   const createCalendar = async () => {
@@ -81,7 +80,8 @@ exports.nonsense = functions.https.onRequest(async (req, res) => {
 exports.plaidWebHookDev = functions.https.onRequest(async (req, res) => {
   const plaidWebHookDev = () => {
     const payload = req.body
-    res.status(200).send(`webhook hit w/ ${payload}`);
+    const env = process.env.REACT_APP_ENV
+    res.status(200).send(`webhook hit w/ ${payload} at ${env} and random stuff`);
   };
   cors(req, res, plaidWebHookDev);
 });
