@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import PlaidLink from 'react-plaid-link';
 import {
-  logout, deleteUserFromAuth, getRedirectResult, reloadUser,
+  logout,
+  deleteUserFromAuth,
+  getRedirectResult,
+  reloadUser,
 } from '../helpers/auth';
 import {
   createNewUser,
@@ -23,6 +26,7 @@ export default class Home extends Component {
     this.handleOAuthToken = this.handleOAuthToken.bind(this);
     this.handleOnSuccess = this.handleOnSuccess.bind(this);
     this.exchangePublicToken = this.exchangePublicToken.bind(this);
+    this.deleteAllItems = this.deleteAllItems.bind(this);
   }
 
   componentDidMount() {
@@ -104,6 +108,18 @@ export default class Home extends Component {
     }
   }
 
+  async deleteAllItems() {
+    const uid = this.state.uid;
+    try {
+      const deleteResult = await axios.post('/api/deleteAllItems', {
+        uid,
+      });
+      console.log(deleteResult.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <div>
@@ -113,6 +129,9 @@ export default class Home extends Component {
         </button>
         <button type="submit" onClick={this.handleDeleteUser}>
           Delete User
+        </button>
+        <button type="submit" onClick={this.deleteAllItems}>
+          Delete all items
         </button>
         <PlaidLink
           clientName="cashendar"
