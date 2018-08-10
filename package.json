@@ -17,14 +17,17 @@
     "react-plaid-link": "^1.0.2",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.4"
+    "react-scripts": "1.1.4",
+    "morgan": "^1.9.0"
   },
   "scripts": {
     "getEnvKey": "curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash",
-    "develop": "eval $(envkey-source) && react-scripts start",
+    "develop-client": "eval $(envkey-source) && react-scripts start",
+    "develop-server": "nodemon server.js",
+    "develop": "npm run develop-client & npm run develop-server",
     "start": "npm run build && node server.js",
     "build": "eval $(./envkey-source-heroku) && react-scripts build",
-    "test": "react-scripts test --env=jsdom",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
