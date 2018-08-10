@@ -125,7 +125,7 @@ export default class Home extends Component {
         </PlaidLink>
         <div>
           <br />
-          {process.env.REACT_APP_PLAID_ENVIRONMENT}
+          {process.env.REACT_APP_ENV}
         </div>
       </div>
     );
