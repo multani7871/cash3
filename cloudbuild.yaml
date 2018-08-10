@@ -34,7 +34,7 @@ steps:
   name: 'gcr.io/cloud-builders/npm'
   entrypoint: 'bash'
   dir: 'functions'
-  args: ['-c', 'curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash && eval $(envkey-source) && ./node_modules/firebase-tools/bin/firebase deploy --token $$FIREBASE_TOKEN']
+  args: ['-c', './node_modules/firebase-tools/bin/firebase deploy --token $$FIREBASE_TOKEN']
   secretEnv: ['ENVKEY', 'FIREBASE_TOKEN']
 
 secrets:
