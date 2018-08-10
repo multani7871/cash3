@@ -1,13 +1,13 @@
-const { google } = require("googleapis");
-const { promisify } = require("util");
+const { google } = require('googleapis');
+const { promisify } = require('util');
 
 const oauth2Client = new google.auth.OAuth2(
   process.env.CLIENT_ID,
   process.env.CLIENT_SECRET,
-  process.env.REDIRECT_URIS
+  process.env.REDIRECT_URIS,
 );
 
-const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
 
 // exports.listEvents = async (oauthToken) => {
 //   oauth2Client.credentials = { access_token: oauthToken };
@@ -27,11 +27,11 @@ const calendar = google.calendar({ version: "v3", auth: oauth2Client });
 //   }
 // }
 
-exports.createCalendar = async oauthToken => {
+exports.createCalendar = async (oauthToken) => {
   oauth2Client.credentials = { access_token: oauthToken };
   const insertAsync = promisify(calendar.calendars.insert).bind(calendar);
   const calConfig = {
-    resource: { summary: "Cashendar" }
+    resource: { summary: 'Cashendar' },
   };
   let calData;
   try {
@@ -47,9 +47,9 @@ exports.deleteCalendar = async (oauthToken, calID) => {
   oauth2Client.credentials = { access_token: oauthToken };
   const deleteAsync = promisify(calendar.calendars.delete).bind(calendar);
   const calConfig = {
-    calendarId: calID
+    calendarId: calID,
   };
-  let calData
+  let calData;
   try {
     const newCal = await deleteAsync(calConfig);
     calData = newCal.data;

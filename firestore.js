@@ -1,4 +1,4 @@
-const { db } = require("./firebaseClient");
+const { db } = require('./firebaseClient');
 
 // exports.createNewUser = (uid, email, OAuthToken) => {
 //   db.collection("users")
@@ -55,10 +55,10 @@ const { db } = require("./firebaseClient");
 // };
 
 exports.addNewCalendarToUser = (uid, calendarID) => {
-  db.collection("users")
+  db.collection('users')
     .doc(uid)
     .update({
-      calendarID: calendarID
+      calendarID,
     })
     .catch(error => console.log(error));
 };
@@ -81,18 +81,16 @@ exports.addItemsToUser = (
   institutionId,
   accesstoken,
   requestId,
-  webhook
-) => {
-  return db
-    .collection("users")
-    .doc(uid)
-    .collection("items")
-    .doc(itemId)
-    .set({
-      institutionName: institutionName,
-      institutionId: institutionId,
-      accessToken: accesstoken,
-      requestId: requestId,
-      webhook: webhook
-    });
-};
+  webhook,
+) => db
+  .collection('users')
+  .doc(uid)
+  .collection('items')
+  .doc(itemId)
+  .set({
+    institutionName,
+    institutionId,
+    accessToken: accesstoken,
+    requestId,
+    webhook,
+  });
