@@ -6,7 +6,7 @@ const cors = require('cors')({
 const path = require('path');
 const morgan = require('morgan');
 const { createCalendar, deleteCalendar } = require('./routes/calendar');
-const { exchangePublicToken, plaidWebHookDev } = require('./routes/plaid');
+const { exchangePublicToken, plaidWebHookDev, deleteAllItems } = require('./routes/plaid');
 
 const app = express();
 
@@ -19,6 +19,7 @@ app.post('/api/deleteCalendar', deleteCalendar);
 app.post('/api/createCalendar', createCalendar);
 app.post('/api/exchangePublicToken', exchangePublicToken);
 app.post('/api/plaidWebHookDev', plaidWebHookDev);
+app.post('/api/deleteAllItems', deleteAllItems);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(`${__dirname}/build/index.html`));
