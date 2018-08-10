@@ -1,0 +1,44 @@
+steps:
+# - id: 'test export'
+#   name: 'gcr.io/cloud-builders/npm'
+#   entrypoint: 'node'
+#   args: ['--print', 'process.env']
+#   secretEnv: ['ENVKEY']
+# - id: 'add source'
+#   name: 'gcr.io/cloud-builders/npm'
+#   args: ['run', 'inject']
+#   secretEnv: ['ENVKEY']
+# - id: 'eval'
+#   name: 'gcr.io/cloud-builders/npm'
+#   args: ['-c', '/usr/local/bin/envkey-source']
+#   secretEnv: ['ENVKEY']
+# - id: 'test export4'
+#   name: 'gcr.io/cloud-builders/npm'
+#   entrypoint: 'bash'
+#   args: ['-c', 'curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash && eval $(envkey-source) && printenv']
+#   secretEnv: ['ENVKEY']
+- id: 'install client node_modules'
+  name: 'gcr.io/cloud-builders/npm'
+  args: ['install']
+  secretEnv: ['ENVKEY']
+- id: 'install functions node_modules'
+  name: 'gcr.io/cloud-builders/npm'
+  dir: 'functions'
+  args: ['install']
+  secretEnv: ['ENVKEY']
+- id: 'build client'
+  name: 'gcr.io/cloud-builders/npm'
+  args: ['run', 'build']
+  secretEnv: ['ENVKEY']
+- id: 'deploy'
+  name: 'gcr.io/cloud-builders/npm'
+  entrypoint: 'bash'
+  dir: 'functions'
+  args: ['-c', 'curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash && eval $(envkey-source) && ./node_modules/firebase-tools/bin/firebase deploy --token $$FIREBASE_TOKEN']
+  secretEnv: ['ENVKEY', 'FIREBASE_TOKEN']
+
+secrets:
+- kmsKeyName: projects/cash3-1a826/locations/global/keyRings/cash3/cryptoKeys/ENVKEY
+  secretEnv:
+    ENVKEY: CiQABHbJ+oIYRel24ZSlBf9L5ewsUdpB1Tg6Yvi7GrjjpawGSKESTgBr9OXOSi1dZf7s0X0MRnrLZJ/x77y8piRF8GPOAJc1FnVJLYwJ8TalMBKVOi5YjU+VvpI1ABSQ1jP4aunQPqMHCfa57xJAzusg8LCgAQ==
+    FIREBASE_TOKEN: CiQABHbJ+l5fuMr3LwjmovN9m5jgWHJYI68QrqYz1b+pB4u46ysSVgBr9OXOFBcac9sn38XtqtaO9FOUAf6N6QS9wcHE9kmwuKTaUjDpf8SLomxrGn+Lla8uiXXZOV6B93pBJippiJnZHF/PkL71tcuYJNvG1D4JE4kUMrDH
