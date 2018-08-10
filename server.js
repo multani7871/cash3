@@ -85,5 +85,4 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(`${__dirname}/build/index.html`));
 });
 
-process.env.PORT = 5000;
-app.listen(process.env.PORT, () => console.log(`Example app listening on ${process.env.PORT}!`));
+app.listen(process.env.PORT || 5000, () => console.log(`Example app listening on ${process.env.PORT}!`));
