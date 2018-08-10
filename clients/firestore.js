@@ -74,7 +74,7 @@ exports.addNewCalendarToUser = (uid, calendarID) => {
 //     .catch(error => console.log(error));
 // };
 
-exports.addItemsToUser = (
+exports.addItemsToUser = async (
   uid,
   itemId,
   institutionName,
@@ -93,4 +93,37 @@ exports.addItemsToUser = (
     accessToken: accesstoken,
     requestId,
     webhook,
-  });
+  })
+  .catch(error => console.log(error));
+
+exports.getAllItems = async (uid) => {
+  const itemIDs = [];
+  try {
+    const querySnapshot = await db
+      .collection('users')
+      .doc(uid)
+      .collection('items')
+      .get();
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const itemData = doc.data();
+      itemData.itemId = id;
+      itemIDs.push(itemData);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  return itemIDs;
+};
+
+exports.deleteItemFromDB = async (uid, itemId) => {
+  try {
+    await db.collection('users')
+      .doc(uid)
+      .collection('items')
+      .doc(itemId)
+      .delete();
+  } catch (error) {
+    console.log(error);
+  }
+};
