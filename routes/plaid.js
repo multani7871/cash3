@@ -28,8 +28,9 @@ exports.exchangePublicToken = async (req, res) => {
   }
 };
 
-exports.plaidWebHookDev = (req, res) => {
+exports.plaidWebHook = (req, res) => {
   const payload = req.body;
+  console.log(payload);
   res.status(200).send(`webhook hit w/ ${payload}`);
 };
 
