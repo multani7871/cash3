@@ -139,12 +139,19 @@ export default class Home extends Component {
           publicKey={process.env.REACT_APP_PLAID_PUBLIC_KEY}
           product={['auth', 'transactions']}
           onSuccess={this.handleOnSuccess}
-        >
-          Connect bank
+          webhook={process.env.REACT_APP_WEBHOOK}
+      >
+        Connect bank
         </PlaidLink>
         <div>
           <br />
+          environment:
+          {' '}
           {process.env.REACT_APP_ENV}
+          <br />
+          webhook:
+          {' '}
+          {process.env.REACT_APP_WEBHOOK}
         </div>
       </div>
     );
