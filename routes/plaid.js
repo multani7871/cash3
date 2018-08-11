@@ -29,9 +29,15 @@ exports.exchangePublicToken = async (req, res) => {
 };
 
 exports.plaidWebHook = (req, res) => {
-  const payload = req.body;
-  console.log(payload);
-  res.status(200).send(`webhook hit w/ ${payload}`);
+  const error = req.body.error;
+  const itemId = req.body.item_id;
+  const newTransactions = req.body.new_transactions;
+  const webHookCode = req.body.webhook_code;
+  const webHookType = req.body.webhook_type;
+
+
+  console.log(req.body);
+  res.status(200).send(`webhook hit w/ ${req.body}`);
 };
 
 exports.deleteAllItems = async (req, res) => {
