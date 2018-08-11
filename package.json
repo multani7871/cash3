@@ -24,7 +24,7 @@
     "getEnvKey": "curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash",
     "develop-client": "eval $(envkey-source) && react-scripts start",
     "develop-server": "nodemon server.js",
-    "develop": "npm run develop-client & npm run develop-server",
+    "develop": "npm run webhook & npm run develop-client & npm run develop-server",
     "start": "npm run build && node server.js",
     "build": "eval $(./envkey-source-heroku) && react-scripts build",
     "test": "jest",
