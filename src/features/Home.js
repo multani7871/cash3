@@ -162,6 +162,17 @@ export default class Home extends Component {
           {' '}
           {process.env.REACT_APP_WEBHOOK}
         </div>
+        <ul>
+          {this.state.userItems.map(item => (
+            <li key={item.itemId}>
+              <button type="submit" onClick={() => this.deleteItem(item.itemId)}>
+                Delete
+                {' '}
+                {item.institutionName}
+              </button>
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }
