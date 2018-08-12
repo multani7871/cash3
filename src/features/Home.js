@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import PlaidLink from 'react-plaid-link';
 import {
-  logout,
-  deleteUserFromAuth,
-  getRedirectResult,
-  reloadUser,
+  logout, deleteUserFromAuth, getRedirectResult, reloadUser,
 } from '../helpers/auth';
 import {
   createNewUser,
@@ -14,19 +11,24 @@ import {
   updateOAuthToken,
   getUserOAuthToken,
   getUserCalID,
+  getAllItems,
 } from '../helpers/firestore';
 
 const appTokenKey = 'appToken';
 export default class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = { uid: localStorage.getItem(appTokenKey) };
+    this.state = {
+      uid: localStorage.getItem(appTokenKey),
+      userItems: [],
+    };
     this.handleLogout = this.handleLogout.bind(this);
     this.handleDeleteUser = this.handleDeleteUser.bind(this);
     this.handleOAuthToken = this.handleOAuthToken.bind(this);
     this.handleOnSuccess = this.handleOnSuccess.bind(this);
     this.exchangePublicToken = this.exchangePublicToken.bind(this);
     this.deleteAllItems = this.deleteAllItems.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
     this.populateUserItems = this.populateUserItems.bind(this);
   }
 
@@ -96,11 +98,12 @@ export default class Home extends Component {
 
   async handleOnSuccess(token, metadata) {
     const institution = metadata.institution;
-    this.exchangePublicToken(token, institution);
+    await this.exchangePublicToken(token, institution);
+    await this.populateUserItems();
   }
 
   async exchangePublicToken(publicToken, institution) {
-    const uid = localStorage.getItem(appTokenKey);
+    const uid = this.state.uid;
     const config = {
       url: '/api/exchangePublicToken',
       payload: {
@@ -117,16 +120,32 @@ export default class Home extends Component {
     }
   }
 
-  async deleteAllItems() {
+  async deleteAllItems(itemId) {
     const uid = this.state.uid;
     try {
       const deleteResult = await axios.post('/api/deleteAllItems', {
         uid,
+        itemId,
+      });
+      console.log(deleteResult.data);
+      await this.populateUserItems();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async deleteItem(itemId) {
+    const uid = this.state.uid;
+    try {
+      const deleteResult = await axios.post('/api/deleteItem', {
+        uid,
+        itemId,
       });
       console.log(deleteResult.data);
     } catch (error) {
       console.log(error);
     }
+    await this.populateUserItems();
   }
 
   render() {
@@ -146,11 +165,11 @@ export default class Home extends Component {
           clientName="cashendar"
           env={process.env.REACT_APP_PLAID_ENVIRONMENT}
           publicKey={process.env.REACT_APP_PLAID_PUBLIC_KEY}
-          product={['auth', 'transactions']}
+          product={['transactions']}
           onSuccess={this.handleOnSuccess}
           webhook={process.env.REACT_APP_WEBHOOK}
-      >
-        Connect bank
+        >
+          Connect bank
         </PlaidLink>
         <div>
           <br />
