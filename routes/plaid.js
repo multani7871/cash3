@@ -41,8 +41,8 @@ exports.plaidWebHook = (req, res) => {
 };
 
 const deleteIndividualItem = async (itemId, uid) => {
-  const accessToken = await getAccessToken(uid, itemId);
   try {
+    const accessToken = await getAccessToken(uid, itemId);
     const plaidDeletionStatus = await plaidClient.deleteItem(accessToken);
     const nonExistentToken = plaidDeletionStatus.error_code === 'INVALID_ACCESS_TOKEN';
     if (plaidDeletionStatus.deleted || nonExistentToken) {
