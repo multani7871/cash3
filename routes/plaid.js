@@ -1,6 +1,6 @@
 const { addItemsToUser } = require('../clients/firestore');
 const { plaidClient } = require('../clients/plaidClient');
-const { getAllItems, deleteItemFromDB } = require('../clients/firestore');
+const { getAllItems, deleteItemFromDB, getAccessToken } = require('../clients/firestore');
 
 exports.exchangePublicToken = async (req, res) => {
   const publicToken = req.body.publicToken;
@@ -40,6 +40,19 @@ exports.plaidWebHook = (req, res) => {
   res.status(200).send(`webhook hit w/ ${req.body}`);
 };
 
+const deleteIndividualItem = async (itemId, uid) => {
+  const accessToken = await getAccessToken(uid, itemId);
+  try {
+    const plaidDeletionStatus = await plaidClient.deleteItem(accessToken);
+    const nonExistentToken = plaidDeletionStatus.error_code === 'INVALID_ACCESS_TOKEN';
+    if (plaidDeletionStatus.deleted || nonExistentToken) {
+      await deleteItemFromDB(uid, itemId);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 exports.deleteAllItems = async (req, res) => {
   const uid = req.body.uid;
   let allItems;
@@ -48,20 +61,8 @@ exports.deleteAllItems = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-
-  const deleteIndividualItem = async (item) => {
-    const itemId = item.itemId;
-    try {
-      const plaidDeletionStatus = await plaidClient.deleteItem(item.accessToken);
-      if (plaidDeletionStatus.deleted) {
-        await deleteItemFromDB(uid, itemId);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  allItems.forEach(deleteIndividualItem);
-  const message1 = `delete items for ${JSON.stringify(allItems)}`;
+  allItems.forEach(item => deleteIndividualItem(item.itemId, uid));
+  const message1 = `deleted ${JSON.stringify(allItems)}`;
   const message2 = 'no items to delete';
   let messageToSend;
   if (allItems.length === 0) {
@@ -71,4 +72,15 @@ exports.deleteAllItems = async (req, res) => {
   }
 
   res.status(200).send(messageToSend);
+};
+
+exports.deleteItem = async (req, res) => {
+  const uid = req.body.uid;
+  const itemId = req.body.itemId;
+  try {
+    await deleteIndividualItem(itemId, uid);
+  } catch (error) {
+    console.log(error);
+  }
+  res.status(200).send(`${itemId} deleted`);
 };
