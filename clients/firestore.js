@@ -127,3 +127,12 @@ exports.deleteItemFromDB = async (uid, itemId) => {
     console.log(error);
   }
 };
+
+exports.getAccessToken = async (uid, itemId) => db
+  .collection('users')
+  .doc(uid)
+  .collection('items')
+  .doc(itemId)
+  .get()
+  .then(doc => doc.data().accessToken)
+  .catch(error => console.log(error));
