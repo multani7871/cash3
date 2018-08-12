@@ -27,10 +27,19 @@ export default class Home extends Component {
     this.handleOnSuccess = this.handleOnSuccess.bind(this);
     this.exchangePublicToken = this.exchangePublicToken.bind(this);
     this.deleteAllItems = this.deleteAllItems.bind(this);
+    this.populateUserItems = this.populateUserItems.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.handleOAuthToken();
+    this.populateUserItems();
+  }
+
+  async populateUserItems() {
+    const uid = this.state.uid;
+    // todo: make getAllItems a call to server
+    const allItems = await getAllItems(uid);
+    this.setState({ userItems: allItems });
   }
 
   async handleOAuthToken() {
