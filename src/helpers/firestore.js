@@ -1,73 +1,110 @@
-import { db } from "./firebaseClient";
+import { db } from './firebaseClient';
 
 export function createNewUser(uid, email, OAuthToken) {
-  db.collection("users")
+  db.collection('users')
     .doc(uid)
     .set({
-      email: email,
-      OAuthToken: OAuthToken
+      email,
+      OAuthToken,
     })
-    .then(console.log("user created"))
+    .then(console.log('user created'))
     .catch(error => console.log(error));
 }
 
 export function updateOAuthToken(uid, OAuthToken) {
-  db.collection("users")
+  db.collection('users')
     .doc(uid)
     .update({
-      OAuthToken: OAuthToken
+      OAuthToken,
     })
     .catch(error => console.log(error));
 }
 
 export async function doesUserExist(uid) {
+  let userExists = false;
   try {
-    let user = await db.collection("users").doc(uid).get();
+    const user = await db
+      .collection('users')
+      .doc(uid)
+      .get();
     if (user.exists) {
-      return true;
-    } else {
-      return false;
+      userExists = true;
     }
   } catch (error) {
     console.log(error);
   }
+  return userExists;
 }
 
 export function deleteUserFromDB(uid) {
-  db.collection("users")
+  db.collection('users')
     .doc(uid)
     .delete()
-    .then(console.log("user deleted"))
+    .then(console.log('user deleted'))
     .catch(error => console.log(error));
 }
 
 export function getUserOAuthToken(uid) {
   return db
-    .collection("users")
+    .collection('users')
     .doc(uid)
     .get()
-    .then(function(doc) {
-      return doc.data().OAuthToken;
-    })
+    .then(doc => doc.data().OAuthToken)
     .catch(error => console.log(error));
 }
 
 export function addNewCalendarToUser(uid, calendarID) {
-  db.collection("users")
+  db.collection('users')
     .doc(uid)
     .update({
-      calendarID: calendarID
+      calendarID,
     })
     .catch(error => console.log(error));
 }
 
 export function getUserCalID(uid) {
   return db
-    .collection("users")
+    .collection('users')
     .doc(uid)
     .get()
-    .then(function(doc) {
-      return doc.data().calendarID;
-    })
+    .then(doc => doc.data().calendarID)
     .catch(error => console.log(error));
 }
+
+export async function getAllItems(uid) {
+  const itemIDs = [];
+  try {
+    const querySnapshot = await db
+      .collection('users')
+      .doc(uid)
+      .collection('items')
+      .get();
+    querySnapshot.forEach((doc) => {
+      const id = doc.id;
+      const itemRaw = doc.data();
+      const itemData = {};
+      itemData.itemId = id;
+      itemData.institutionName = itemRaw.institutionName;
+      itemIDs.push(itemData);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  return itemIDs;
+}
+// export async function getUserDataRealTime(uid) {
+//   let userData;
+//   await db.collection('users').doc(uid)
+//     .onSnapshot(async (doc) => {
+//       console.log('Current data: ', doc.data());
+//       userData = await doc.data();
+//     });
+//   return userData;
+// }
+// userData = await db.collection('users').doc(uid);
+// userData.onSnapshot(async (user) => {
+//   stuff = await user.data().rnado;
+//   console.log(stuff);
+//   return stuff;
+// });
+// console.log(stuff);
