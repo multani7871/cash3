@@ -127,7 +127,6 @@ export default class Home extends Component {
         uid,
         itemId,
       });
-      console.log(deleteResult.data);
       await this.populateUserItems();
     } catch (error) {
       console.log(error);
@@ -141,7 +140,6 @@ export default class Home extends Component {
         uid,
         itemId,
       });
-      console.log(deleteResult.data);
     } catch (error) {
       console.log(error);
     }
