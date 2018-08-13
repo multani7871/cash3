@@ -1,18 +1,14 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import PlaidLink from 'react-plaid-link';
+import { logout } from '../helpers/auth';
 import {
-  logout, deleteUserFromAuth, getRedirectResult, reloadUser,
-} from '../helpers/auth';
-import {
-  createNewUser,
-  deleteUserFromDB,
-  doesUserExist,
-  updateOAuthToken,
-  getUserOAuthToken,
-  getUserCalID,
-  getAllItems,
-} from '../helpers/firestore';
+  deleteItemFromApp,
+  handleDeleteUser,
+  exchangePublicToken,
+  deleteAllItems,
+  populateUserItems,
+  handleExistingAndNewUsers,
+} from './api';
 
 const appTokenKey = 'appToken';
 export default class Home extends Component {
@@ -23,46 +19,16 @@ export default class Home extends Component {
       userItems: [],
     };
     this.handleLogout = this.handleLogout.bind(this);
-    this.handleDeleteUser = this.handleDeleteUser.bind(this);
-    this.handleOAuthToken = this.handleOAuthToken.bind(this);
     this.handleOnSuccess = this.handleOnSuccess.bind(this);
-    this.exchangePublicToken = this.exchangePublicToken.bind(this);
-    this.deleteAllItems = this.deleteAllItems.bind(this);
-    this.deleteItem = this.deleteItem.bind(this);
-    this.populateUserItems = this.populateUserItems.bind(this);
+    this.populateUserItems = populateUserItems.bind(this);
+    this.deleteAllItems = deleteAllItems.bind(this);
+    this.handleExistingAndNewUsers = handleExistingAndNewUsers.bind(this);
   }
 
   async componentDidMount() {
-    this.handleOAuthToken();
-    this.populateUserItems();
-  }
-
-  async populateUserItems() {
-    const uid = this.state.uid;
-    // todo: make getAllItems a call to server
-    const allItems = await getAllItems(uid);
-    this.setState({ userItems: allItems });
-  }
-
-  async handleOAuthToken() {
     try {
-      const result = await getRedirectResult();
-      if (result.credential) {
-        // This gives you a Google Access` Token. You can use it to access the Google API.
-        const email = result.user.email;
-        const uid = localStorage.getItem(appTokenKey);
-        const OAuthToken = result.credential.accessToken;
-        const exists = await doesUserExist(uid);
-        if (exists) {
-          await updateOAuthToken(uid, OAuthToken);
-        } else {
-          await createNewUser(uid, email, OAuthToken);
-          await axios.post('/api/createCalendar', {
-            OAuthToken,
-            uid,
-          });
-        }
-      }
+      await this.handleExistingAndNewUsers();
+      await this.populateUserItems();
     } catch (error) {
       console.log(error);
     }
@@ -78,85 +44,46 @@ export default class Home extends Component {
     }
   }
 
-  async handleDeleteUser() {
-    try {
-      await reloadUser();
-      const uid = localStorage.getItem(appTokenKey);
-      const OAuthToken = await getUserOAuthToken(uid);
-      const calID = await getUserCalID(uid);
-      await axios.post('/api/deleteCalendar', {
-        OAuthToken,
-        calID,
-      });
-      await deleteUserFromDB(localStorage.getItem(appTokenKey));
-      await deleteUserFromAuth();
-      this.handleLogout();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   async handleOnSuccess(token, metadata) {
+    const uid = this.state.uid;
     const institution = metadata.institution;
-    await this.exchangePublicToken(token, institution);
-    await this.populateUserItems();
-  }
-
-  async exchangePublicToken(publicToken, institution) {
-    const uid = this.state.uid;
-    const config = {
-      url: '/api/exchangePublicToken',
-      payload: {
-        publicToken,
-        uid,
-        institution,
-        webhook: `${process.env.REACT_APP_WEBHOOK}`,
-      },
-    };
-    try {
-      await axios.post(config.url, config.payload);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async deleteAllItems(itemId) {
-    const uid = this.state.uid;
-    try {
-      const deleteResult = await axios.post('/api/deleteAllItems', {
-        uid,
-        itemId,
-      });
-      await this.populateUserItems();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  async deleteItem(itemId) {
-    const uid = this.state.uid;
-    try {
-      const deleteResult = await axios.post('/api/deleteItem', {
-        uid,
-        itemId,
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    await exchangePublicToken(uid, token, institution);
     await this.populateUserItems();
   }
 
   render() {
+    const uid = this.state.uid;
+
     return (
       <div>
         Logged in
         <button type="submit" onClick={this.handleLogout}>
           Logout
         </button>
-        <button type="submit" onClick={this.handleDeleteUser}>
+        <button
+          type="submit"
+          onClick={async () => {
+            try {
+              await handleDeleteUser(uid);
+              await this.handleLogout();
+            } catch (error) {
+              console.log(error);
+            }
+          }}
+        >
           Delete User
         </button>
-        <button type="submit" onClick={this.deleteAllItems}>
+        <button
+          type="submit"
+          onClick={async () => {
+            try {
+              await deleteAllItems(uid);
+              await this.populateUserItems();
+            } catch (error) {
+              console.log(error);
+            }
+          }}
+        >
           Delete all items
         </button>
         <PlaidLink
@@ -182,7 +109,17 @@ export default class Home extends Component {
         <ul>
           {this.state.userItems.map(item => (
             <li key={item.itemId}>
-              <button type="submit" onClick={() => this.deleteItem(item.itemId)}>
+              <button
+                type="submit"
+                onClick={async () => {
+                  try {
+                    await deleteItemFromApp(uid, item.itemId);
+                    await this.populateUserItems();
+                  } catch (error) {
+                    console.log(error);
+                  }
+                }}
+              >
                 Delete
                 {' '}
                 {item.institutionName}
