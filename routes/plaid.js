@@ -1,6 +1,11 @@
-const { addItemsToUser } = require('../clients/firestore');
 const { plaidClient } = require('../clients/plaidClient');
-const { getAllItems, deleteItemFromDB, getAccessToken } = require('../clients/firestore');
+const {
+  addItemsToUser,
+  getAllItems,
+  deleteItemFromDB,
+  getAccessToken,
+  getAllItemsClient,
+} = require('../clients/firestore');
 
 exports.exchangePublicToken = async (req, res) => {
   const publicToken = req.body.publicToken;
@@ -35,8 +40,7 @@ exports.plaidWebHook = (req, res) => {
   const webHookCode = req.body.webhook_code;
   const webHookType = req.body.webhook_type;
 
-
-  console.log(req.body);
+  // console.log(req.body);
   res.status(200).send(`webhook hit w/ ${req.body}`);
 };
 
@@ -83,4 +87,15 @@ exports.deleteItem = async (req, res) => {
     console.log(error);
   }
   res.status(200).send(`${itemId} deleted`);
+};
+
+exports.getAllItemsClient = async (req, res) => {
+  const uid = req.body.uid;
+  let itemIDs;
+  try {
+    itemIDs = await getAllItemsClient(uid);
+  } catch (error) {
+    console.log(error);
+  }
+  res.status(200).json(itemIDs);
 };
