@@ -1,5 +1,6 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import { loginWithGoogle, onAuthStateChanged } from '../helpers/auth';
+// import { saveRefreshToken } from './api';
 
 const firebaseAuthKey = 'firebaseAuthInProgress';
 const appTokenKey = 'appToken';
@@ -14,14 +15,16 @@ export default class Login extends Component {
   componentWillMount() {
     // checks if we are logged in, if we are go to the home route
     if (localStorage.getItem(appTokenKey)) {
-      // this.handleOAuthToken();
       this.props.history.push('/app/home');
       return;
     }
-    onAuthStateChanged((user) => {
+    onAuthStateChanged(async (user) => {
       if (user) {
+        // const refreshToken = user.refreshToken;
+        const uid = user.uid;
+        // await saveRefreshToken(uid, refreshToken);
         localStorage.removeItem(firebaseAuthKey);
-        localStorage.setItem(appTokenKey, user.uid);
+        localStorage.setItem(appTokenKey, uid);
         this.props.history.push('/app/home');
       }
     });
