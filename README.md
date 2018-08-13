@@ -7,11 +7,7 @@
 
 
 Todos:
-1. setup CI/CD via google flow - just from master
 1. Wipe repo and start over using readme directions to verify another user can set it up
 1. Implement plaid transaction backend using webhooks 
 1. ci/cd flow from staging
-1. Move db methods to backend?
 1. fix eslint warnings on npm i for client and functions
-1. refactor backend to express app so can use CORS middleware
-1. make firebase tools a dev dependency for backend
