@@ -15,9 +15,13 @@ export function getRedirectResult() {
 }
 
 export function onAuthStateChanged(callback) {
-  return firebaseAuth().onAuthStateChanged(callback)
+  return firebaseAuth().onAuthStateChanged(callback);
 }
 
 export function reloadUser() {
   return firebaseAuth().currentUser.reload();
+}
+
+export async function getIdToken() {
+  return firebaseAuth().currentUser.getIdToken(true);
 }
