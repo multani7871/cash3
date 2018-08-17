@@ -1,19 +1,42 @@
 import axios from 'axios';
 import { deleteUserFromAuth, getIdToken, getRedirectResult } from '../helpers/auth';
 
-export async function createNewUserAndCalendar(uid, email, OAuthToken) {
+export async function createNewUserAndCalendar(idToken, email, OAuthToken) {
   try {
     await axios.post('/api/createNewUser', {
-      uid,
+      idToken,
       email,
       OAuthToken,
     });
     await axios.post('/api/createCalendar', {
       OAuthToken,
-      uid,
+      idToken,
     });
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function handleExistingAndNewUsers() {
+  const idToken = this.state.idToken;
+  const result = await getRedirectResult();
+  if (result.credential) {
+    // This gives you a Google Access` Token. You can use it to access the Google API.
+    // const idToken = result.credential.idToken;
+    const email = result.user.email;
+    const OAuthToken = result.credential.accessToken;
+    const response = await axios.post('/api/doesUserExist', {
+      idToken,
+    });
+    const exists = response.data;
+    if (exists) {
+      await axios.post('/api/updateOAuthToken', {
+        idToken,
+        OAuthToken,
+      });
+    } else {
+      await createNewUserAndCalendar(idToken, email, OAuthToken);
+    }
   }
 }
 
@@ -41,10 +64,10 @@ export async function deleteUserFromApp(uid) {
   }
 }
 
-export async function deleteItemFromApp(uid, itemId) {
+export async function deleteItemFromApp(idToken, itemId) {
   try {
     await axios.post('/api/deleteItem', {
-      uid,
+      idToken,
       itemId,
     });
   } catch (error) {
@@ -62,12 +85,12 @@ export async function handleDeleteUser(uid) {
   }
 }
 
-export async function exchangePublicToken(uid, publicToken, institution) {
+export async function exchangePublicToken(idToken, publicToken, institution) {
   const config = {
     url: '/api/exchangePublicToken',
     payload: {
       publicToken,
-      uid,
+      idToken,
       institution,
       webhook: `${process.env.REACT_APP_WEBHOOK}`,
     },
@@ -90,11 +113,11 @@ export async function deleteAllItems(uid) {
 }
 
 export async function populateUserItems() {
-  const uid = this.state.uid;
+  const idToken = this.state.idToken;
   let request;
   try {
     request = await axios.post('/api/getAllItemsClient', {
-      uid,
+      idToken,
     });
   } catch (error) {
     console.log(error);
@@ -109,26 +132,3 @@ export async function populateUserItems() {
 //     refreshToken,
 //   });
 // }
-
-export async function handleExistingAndNewUsers() {
-  const uid = this.state.uid;
-  const result = await getRedirectResult();
-  if (result.credential) {
-    // This gives you a Google Access` Token. You can use it to access the Google API.
-    const email = result.user.email;
-    const OAuthToken = result.credential.accessToken;
-
-    const response = await axios.post('/api/doesUserExist', {
-      uid,
-    });
-    const exists = response.data;
-    if (exists) {
-      await axios.post('/api/updateOAuthToken', {
-        uid,
-        OAuthToken,
-      });
-    } else {
-      await createNewUserAndCalendar(uid, email, OAuthToken);
-    }
-  }
-}
