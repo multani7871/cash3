@@ -11,3 +11,5 @@ Todos:
 1. Implement plaid transaction backend using webhooks 
 1. ci/cd flow from staging
 1. fix eslint warnings on npm i for client and functions
+1. delete all orphan calendars cleanup script
+1. Make custom middleware into own npm module and configurable with firebase app and fields.

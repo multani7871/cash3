@@ -11,14 +11,15 @@
     "firebase": "^5.3.1",
     "firebase-admin": "^6.0.0",
     "googleapis": "^32.0.0",
+    "morgan": "^1.9.0",
     "plaid": "^2.7.0",
+    "protobufjs": "^6.8.8",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-plaid-link": "^1.0.2",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.4",
-    "morgan": "^1.9.0"
+    "react-scripts": "1.1.4"
   },
   "scripts": {
     "getEnvKey": "curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash",
