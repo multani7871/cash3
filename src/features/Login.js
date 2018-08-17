@@ -4,6 +4,7 @@ import { loginWithGoogle, onAuthStateChanged } from '../helpers/auth';
 
 const firebaseAuthKey = 'firebaseAuthInProgress';
 const appTokenKey = 'appToken';
+const idToken = 'idToken';
 
 export default class Login extends Component {
   constructor(props) {
@@ -22,9 +23,11 @@ export default class Login extends Component {
       if (user) {
         // const refreshToken = user.refreshToken;
         const uid = user.uid;
+        const idToken1 = await user.getIdToken();
         // await saveRefreshToken(uid, refreshToken);
         localStorage.removeItem(firebaseAuthKey);
         localStorage.setItem(appTokenKey, uid);
+        localStorage.setItem(idToken, idToken1);
         this.props.history.push('/app/home');
       }
     });
