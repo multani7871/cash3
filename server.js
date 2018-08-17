@@ -22,13 +22,15 @@ const {
   deleteUserFromDB,
   // saveRefreshToken,
 } = require('./routes/user');
+const { getUidFromFirebaseToken } = require('./middleware/getUidFromFirebaseToken');
 
 const app = express();
 
-app.use(morgan(':method :url :status'));
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(cors);
 app.use(express.json());
+app.use(morgan(':url :status'));
+app.use(getUidFromFirebaseToken);
 
 app.post('/api/deleteCalendar', deleteCalendar);
 app.post('/api/createCalendar', createCalendar);
@@ -44,7 +46,6 @@ app.post('/api/getUserOAuthToken', getUserOAuthToken);
 app.post('/api/getUserCalID', getUserCalID);
 app.post('/api/deleteUserFromDB', deleteUserFromDB);
 // app.post('/api/saveRefreshToken', saveRefreshToken);
-
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(`${__dirname}/build/index.html`));
