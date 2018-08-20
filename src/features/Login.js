@@ -3,30 +3,27 @@ import { loginWithGoogle, onAuthStateChanged } from '../helpers/auth';
 // import { saveRefreshToken } from './api';
 
 const firebaseAuthKey = 'firebaseAuthInProgress';
-const appTokenKey = 'appToken';
 const idToken = 'idToken';
 
 export default class Login extends Component {
   constructor(props) {
     super(props);
-    this.state = { splashScreen: false };
+    // this.state = { splashScreen: false };
     this.handleGoogleLogin = this.handleGoogleLogin.bind(this);
   }
 
   componentWillMount() {
     // checks if we are logged in, if we are go to the home route
-    if (localStorage.getItem(appTokenKey)) {
+    if (localStorage.getItem(idToken)) {
       this.props.history.push('/app/home');
       return;
     }
     onAuthStateChanged(async (user) => {
       if (user) {
         // const refreshToken = user.refreshToken;
-        const uid = user.uid;
         const idToken1 = await user.getIdToken();
         // await saveRefreshToken(uid, refreshToken);
         localStorage.removeItem(firebaseAuthKey);
-        localStorage.setItem(appTokenKey, uid);
         localStorage.setItem(idToken, idToken1);
         this.props.history.push('/app/home');
       }
