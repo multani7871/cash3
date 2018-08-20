@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { deleteUserFromAuth, getIdToken, getRedirectResult } from '../helpers/auth';
+import { deleteUserFromAuth, getRedirectResult } from '../helpers/auth';
 
 export async function createNewUserAndCalendar(idToken, email, OAuthToken) {
   try {
@@ -40,14 +40,14 @@ export async function handleExistingAndNewUsers() {
   }
 }
 
-export async function deleteUserFromApp(uid) {
+export async function deleteUserFromApp(idToken) {
   try {
     const [getUserOAuthTokenResult, calIDRequest] = await Promise.all([
       await axios.post('/api/getUserOAuthToken', {
-        uid,
+        idToken,
       }),
       await axios.post('/api/getUserCalID', {
-        uid,
+        idToken,
       }),
     ]);
     const OAuthToken = getUserOAuthTokenResult.data;
@@ -57,7 +57,7 @@ export async function deleteUserFromApp(uid) {
       calID,
     });
     await axios.post('/api/deleteUserFromDB', {
-      uid,
+      idToken,
     });
   } catch (error) {
     console.log(error);
@@ -75,10 +75,10 @@ export async function deleteItemFromApp(idToken, itemId) {
   }
 }
 
-export async function handleDeleteUser(uid) {
+export async function handleDeleteUser(idToken) {
   try {
-    await getIdToken();
-    await deleteUserFromApp(uid);
+    // await getIdToken();
+    await deleteUserFromApp(idToken);
     await deleteUserFromAuth();
   } catch (error) {
     console.log(error);

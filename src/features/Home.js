@@ -10,13 +10,11 @@ import {
   handleExistingAndNewUsers,
 } from './api';
 
-const appTokenKey = 'appToken';
 const idToken = 'idToken';
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      uid: localStorage.getItem(appTokenKey),
       userItems: [],
       idToken: localStorage.getItem(idToken),
     };
@@ -39,7 +37,6 @@ export default class Home extends Component {
   async handleLogout() {
     try {
       await logout();
-      await localStorage.removeItem(appTokenKey);
       await localStorage.removeItem(idToken);
       await this.props.history.push('/login');
     } catch (error) {
@@ -55,7 +52,6 @@ export default class Home extends Component {
   }
 
   render() {
-    const uid = this.state.uid;
     const idToken = this.state.idToken;
 
     return (
@@ -68,7 +64,7 @@ export default class Home extends Component {
           type="submit"
           onClick={async () => {
             try {
-              await handleDeleteUser(uid);
+              await handleDeleteUser(idToken);
               await this.handleLogout();
             } catch (error) {
               console.log(error);
@@ -117,7 +113,6 @@ export default class Home extends Component {
                 type="submit"
                 onClick={async () => {
                   try {
-                    const idToken = this.state.idToken;
                     await deleteItemFromApp(idToken, item.itemId);
                     await this.populateUserItems();
                   } catch (error) {
