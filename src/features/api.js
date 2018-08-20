@@ -102,10 +102,10 @@ export async function exchangePublicToken(idToken, publicToken, institution) {
   }
 }
 
-export async function deleteAllItems(uid) {
+export async function deleteAllItems(idToken) {
   try {
     await axios.post('/api/deleteAllItems', {
-      uid,
+      idToken,
     });
   } catch (error) {
     console.log(error);

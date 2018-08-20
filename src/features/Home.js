@@ -56,6 +56,7 @@ export default class Home extends Component {
 
   render() {
     const uid = this.state.uid;
+    const idToken = this.state.idToken;
 
     return (
       <div>
@@ -80,7 +81,7 @@ export default class Home extends Component {
           type="submit"
           onClick={async () => {
             try {
-              await deleteAllItems(uid);
+              await deleteAllItems(idToken);
               await this.populateUserItems();
             } catch (error) {
               console.log(error);
