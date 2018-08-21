@@ -47,13 +47,16 @@ export default class Home extends Component {
   async handleOnSuccess(token, metadata) {
     const idToken = this.state.idToken;
     const institution = metadata.institution;
-    await exchangePublicToken(idToken, token, institution);
-    await this.populateUserItems();
+    try {
+      await exchangePublicToken(idToken, token, institution);
+      await this.populateUserItems();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   render() {
     const idToken = this.state.idToken;
-
     return (
       <div>
         Logged in
