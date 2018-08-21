@@ -1,3 +1,4 @@
+const moment = require('moment');
 const { plaidClient } = require('../clients/plaidClient');
 const {
   addItemsToUser,
@@ -5,6 +6,11 @@ const {
   deleteItemFromDB,
   getAccessToken,
   getAllItemsClient,
+  addAccountToItem,
+  getAllItemAccounts,
+  // updateItemAccounts,
+  deleteAllAccountsForAnItem,
+  // deleteItemAccount,
 } = require('../clients/firestore');
 
 exports.exchangePublicToken = async (req, res) => {
@@ -33,15 +39,44 @@ exports.exchangePublicToken = async (req, res) => {
   }
 };
 
-exports.plaidWebHook = (req, res) => {
-  const error = req.body.error;
+const handleInitialUpdate = async (itemId) => {
+  try {
+    const now = moment();
+    const today = now.format('YYYY-MM-DD');
+    const thirtyDaysAgo = now.subtract(30, 'days').format('YYYY-MM-DD');
+    const accessToken = await getAccessToken(itemId);
+    const plaidResponse = await plaidClient.getTransactions(accessToken, thirtyDaysAgo, today);
+    const accounts = plaidResponse.accounts;
+    // const transactions = plaidResponse.transactions;
+    const accountsToAdd = accounts.map(async (account) => {
+      await addAccountToItem(itemId, account);
+    });
+    await Promise.all(accountsToAdd);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.plaidWebHook = async (req, res) => {
+  const plaidError = req.body.error;
   const itemId = req.body.item_id;
   const newTransactions = req.body.new_transactions;
   const webHookCode = req.body.webhook_code;
   const webHookType = req.body.webhook_type;
 
-  // console.log(req.body);
-  res.status(200).send(`webhook hit w/ ${req.body}`);
+  if (webHookCode === 'INITIAL_UPDATE') {
+    try {
+      await handleInitialUpdate(itemId);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  if (webHookCode === 'HISTORICAL_UPDATE') {
+    console.log('historical webhook');
+  }
+
+  res.status(200).json('req.body');
 };
 
 const deleteIndividualItem = async (itemId, uid) => {
@@ -50,6 +85,7 @@ const deleteIndividualItem = async (itemId, uid) => {
     const plaidDeletionStatus = await plaidClient.deleteItem(accessToken);
     const nonExistentToken = plaidDeletionStatus.error_code === 'INVALID_ACCESS_TOKEN';
     if (plaidDeletionStatus.deleted || nonExistentToken) {
+      await deleteAllAccountsForAnItem(itemId);
       await deleteItemFromDB(uid, itemId);
     }
   } catch (error) {
@@ -57,13 +93,21 @@ const deleteIndividualItem = async (itemId, uid) => {
   }
 };
 
-exports.deleteAllItems = async (req, res) => {
-  const uid = req.body.uid;
+const deleteAllItemsHandler = async (uid) => {
   let allItems;
   try {
     allItems = await getAllItems(uid);
     const deletionStatus = allItems.map(async item => deleteIndividualItem(item.itemId, uid));
     await Promise.all(deletionStatus);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.deleteAllItems = async (req, res) => {
+  const uid = req.body.uid;
+  try {
+    await deleteAllItemsHandler(uid);
   } catch (error) {
     console.log(error);
   }
