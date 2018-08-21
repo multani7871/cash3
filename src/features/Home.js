@@ -57,6 +57,7 @@ export default class Home extends Component {
 
   render() {
     const idToken = this.state.idToken;
+    const userItems = this.state.userItems;
     return (
       <div>
         Logged in
@@ -110,7 +111,7 @@ export default class Home extends Component {
           {process.env.REACT_APP_WEBHOOK}
         </div>
         <ul>
-          {this.state.userItems.map(item => (
+          {!userItems ? null : userItems.map(item => (
             <li key={item.itemId}>
               <button
                 type="submit"
