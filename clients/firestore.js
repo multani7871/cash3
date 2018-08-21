@@ -12,7 +12,8 @@ exports.createNewUser = async (uid, email, OAuthToken) => {
 };
 
 exports.updateOAuthToken = async (uid, OAuthToken) => {
-  await db.collection('users')
+  await db
+    .collection('users')
     .doc(uid)
     .update({
       OAuthToken,
@@ -37,10 +38,13 @@ exports.doesUserExist = async (uid) => {
 };
 
 exports.deleteUserFromDB = async (uid) => {
-  db.collection('users')
-    .doc(uid)
-    .delete()
-    .catch(error => console.log(error));
+  try {
+    await db.collection('users')
+      .doc(uid)
+      .delete();
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.getUserOAuthToken = async uid => db
@@ -74,19 +78,28 @@ exports.addItemsToUser = async (
   accesstoken,
   requestId,
   webhook,
-) => db
-  .collection('users')
-  .doc(uid)
-  .collection('items')
-  .doc(itemId)
-  .set({
-    institutionName,
-    institutionId,
-    accessToken: accesstoken,
-    requestId,
-    webhook,
-  })
-  .catch(error => console.log(error));
+) => {
+  await Promise.all([
+    db
+      .collection('users')
+      .doc(uid)
+      .collection('items')
+      .doc(itemId)
+      .set({
+        itemId,
+      }),
+    db
+      .collection('items')
+      .doc(itemId)
+      .set({
+        institutionName,
+        institutionId,
+        accessToken: accesstoken,
+        requestId,
+        webhook,
+      }),
+  ]).catch(error => console.log(error));
+};
 
 exports.getAllItems = async (uid) => {
   const itemIDs = [];
@@ -108,44 +121,69 @@ exports.getAllItems = async (uid) => {
   return itemIDs;
 };
 
-exports.getAllItemsClient = async (uid) => {
-  const itemIDs = [];
+const getInstitutionName = async itemId => db
+  .collection('items')
+  .doc(itemId)
+  .get()
+  .then(doc => doc.data().institutionName);
+
+const getQuerySnapshot = async uid => db
+  .collection('users')
+  .doc(uid)
+  .collection('items')
+  .get();
+
+const buildClientPayloadItem = async (itemId) => {
+  const itemData = {};
+  itemData.itemId = itemId;
   try {
-    const querySnapshot = await db
-      .collection('users')
-      .doc(uid)
-      .collection('items')
-      .get();
-    querySnapshot.forEach((doc) => {
-      const id = doc.id;
-      const itemRaw = doc.data();
-      const itemData = {};
-      itemData.itemId = id;
-      itemData.institutionName = itemRaw.institutionName;
-      itemIDs.push(itemData);
-    });
+    const institutionName = await getInstitutionName(itemId);
+    itemData.institutionName = institutionName;
   } catch (error) {
     console.log(error);
   }
-  return itemIDs;
+  return itemData;
+};
+
+exports.getAllItemsClient = async (uid) => {
+  // todo: refactor this into a reduce
+  const itemIDs = [];
+  let querySnapshot;
+  let itemPayload;
+  try {
+    querySnapshot = await getQuerySnapshot(uid);
+    querySnapshot.forEach((doc) => {
+      itemIDs.push(doc.id);
+    });
+    const getItemObj = async itemId => buildClientPayloadItem(itemId);
+    const getAllItemObjs = itemIDs.map(getItemObj);
+    itemPayload = await Promise.all(getAllItemObjs);
+  } catch (error) {
+    console.log(error);
+  }
+  return itemPayload;
 };
 
 exports.deleteItemFromDB = async (uid, itemId) => {
   try {
-    await db
-      .collection('users')
-      .doc(uid)
-      .collection('items')
-      .doc(itemId)
-      .delete();
+    await Promise.all([
+      db
+        .collection('users')
+        .doc(uid)
+        .collection('items')
+        .doc(itemId)
+        .delete(),
+      db
+        .collection('items')
+        .doc(itemId)
+        .delete(),
+    ]);
   } catch (error) {
     console.log(error);
   }
 };
 
-exports.getAccessToken = async (uid, itemId) => db
-  .collection('users')
-  .doc(uid)
+exports.getAccessToken = async itemId => db
   .collection('items')
   .doc(itemId)
   .get()
