@@ -46,7 +46,7 @@ exports.plaidWebHook = (req, res) => {
 
 const deleteIndividualItem = async (itemId, uid) => {
   try {
-    const accessToken = await getAccessToken(uid, itemId);
+    const accessToken = await getAccessToken(itemId);
     const plaidDeletionStatus = await plaidClient.deleteItem(accessToken);
     const nonExistentToken = plaidDeletionStatus.error_code === 'INVALID_ACCESS_TOKEN';
     if (plaidDeletionStatus.deleted || nonExistentToken) {
@@ -62,20 +62,12 @@ exports.deleteAllItems = async (req, res) => {
   let allItems;
   try {
     allItems = await getAllItems(uid);
+    const deletionStatus = allItems.map(async item => deleteIndividualItem(item.itemId, uid));
+    await Promise.all(deletionStatus);
   } catch (error) {
     console.log(error);
   }
-  allItems.forEach(item => deleteIndividualItem(item.itemId, uid));
-  const message1 = `deleted ${JSON.stringify(allItems)}`;
-  const message2 = 'no items to delete';
-  let messageToSend;
-  if (allItems.length === 0) {
-    messageToSend = message2;
-  } else {
-    messageToSend = message1;
-  }
-
-  res.status(200).send(messageToSend);
+  res.status(200).send();
 };
 
 exports.deleteItem = async (req, res) => {
