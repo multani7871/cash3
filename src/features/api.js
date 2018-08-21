@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { deleteUserFromAuth, getRedirectResult } from '../helpers/auth';
+import { deleteUserFromAuth, getRedirectResult, reloadUser } from '../helpers/auth';
 
 export async function createNewUserAndCalendar(idToken, email, OAuthToken) {
   try {
@@ -113,6 +113,7 @@ export async function deleteAllItems(idToken) {
 }
 
 export async function populateUserItems() {
+  reloadUser();
   const idToken = this.state.idToken;
   let request;
   try {
