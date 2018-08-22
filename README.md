@@ -13,3 +13,5 @@ Todos:
 1. fix eslint warnings on npm i for client and functions
 1. delete all orphan calendars cleanup script
 1. Make custom middleware into own npm module and configurable with firebase app and fields.
+1. add accounts to items
+1. add transactions to items
