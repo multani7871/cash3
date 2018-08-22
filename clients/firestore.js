@@ -39,7 +39,8 @@ exports.doesUserExist = async (uid) => {
 
 exports.deleteUserFromDB = async (uid) => {
   try {
-    await db.collection('users')
+    await db
+      .collection('users')
       .doc(uid)
       .delete();
   } catch (error) {
@@ -125,13 +126,15 @@ const getInstitutionName = async itemId => db
   .collection('items')
   .doc(itemId)
   .get()
-  .then(doc => doc.data().institutionName);
+  .then(doc => doc.data().institutionName)
+  .catch(error => console.log(error));
 
 const getQuerySnapshot = async uid => db
   .collection('users')
   .doc(uid)
   .collection('items')
-  .get();
+  .get()
+  .catch(error => console.log(error));
 
 const buildClientPayloadItem = async (itemId) => {
   const itemData = {};
@@ -198,3 +201,67 @@ exports.getAccessToken = async itemId => db
 //     })
 //     .catch(error => console.log(error));
 // };
+
+exports.addAccountToItem = async (itemId, account) => {
+  await db
+    .collection('items')
+    .doc(itemId)
+    .collection('accounts')
+    .doc(account.account_id)
+    .set({
+      account,
+    })
+    .catch(error => console.log(error));
+};
+
+exports.updateItemAccounts = async (itemId, account) => {
+  await db
+    .collection('items')
+    .doc(itemId)
+    .collection('accounts')
+    .doc(account.account_id)
+    .update({
+      account,
+    })
+    .catch(error => console.log(error));
+};
+
+const deleteItemAccount = async (itemId, accountId) => {
+  await db
+    .collection('items')
+    .doc(itemId)
+    .collection('accounts')
+    .doc(accountId)
+    .delete()
+    .catch(error => console.log(error));
+};
+
+const getAllItemAccountsById = async (itemId) => {
+  const accountIds = [];
+  try {
+    const querySnapshot = await db
+      .collection('items')
+      .doc(itemId)
+      .collection('accounts')
+      .get();
+    querySnapshot.forEach((doc) => {
+      const accountId = doc.data().account.account_id;
+      accountIds.push(accountId);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  return accountIds;
+};
+
+exports.deleteAllAccountsForAnItem = async (itemId) => {
+  try {
+    const accountIdsToDelete = await getAllItemAccountsById(itemId);
+    const deletionRequests = await accountIdsToDelete.map(async (accountId) => {
+      await deleteItemAccount(itemId, accountId);
+    });
+    await Promise.all(deletionRequests);
+  } catch (error) {
+    console.log(error);
+  }
+};
