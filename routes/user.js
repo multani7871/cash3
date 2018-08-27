@@ -6,7 +6,7 @@ const {
   getUserCalID,
   deleteUserFromDB,
   // saveRefreshToken,
-} = require('../clients/firestore');
+} = require('../controllers/firestore');
 
 exports.createNewUser = async (req, res) => {
   const uid = req.body.uid;

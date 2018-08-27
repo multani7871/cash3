@@ -1,5 +1,5 @@
-const googleCalendar = require('../clients/googleClient');
-const { addNewCalendarToUser } = require('../clients/firestore');
+const googleCalendar = require('../apiClients/googleClient');
+const { addNewCalendarToUser } = require('../controllers/firestore');
 
 exports.createCalendar = async (req, res) => {
   if (req.body === undefined) {

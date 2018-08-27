@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { plaidClient } = require('../clients/plaidClient');
+const { plaidClient } = require('../apiClients/plaidClient');
 const {
   addItemsToUser,
   getAllItems,
@@ -12,7 +12,7 @@ const {
   deleteAllAccountsForAnItem,
   // deleteItemAccount,
   deleteAllTransactionsForAnItem,
-} = require('../clients/firestore');
+} = require('../controllers/firestore');
 
 exports.exchangePublicToken = async (req, res) => {
   const publicToken = req.body.publicToken;
