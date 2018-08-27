@@ -26,7 +26,7 @@ const { getUidFromFirebaseToken } = require('./middleware/getUidFromFirebaseToke
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(cors);
 app.use(express.json());
 app.use(morgan(':url :status'));
@@ -48,7 +48,7 @@ app.post('/api/deleteUserFromDB', deleteUserFromDB);
 // app.post('/api/saveRefreshToken', saveRefreshToken);
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(`${__dirname}/build/index.html`));
+  res.sendFile(path.join(`${__dirname}/client/build/index.html`));
 });
 
 const port = process.env.PORT || 5000;
