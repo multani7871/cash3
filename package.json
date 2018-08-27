@@ -2,13 +2,10 @@
   "name": "cash3",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000",
   "dependencies": {
-    "axios": "^0.18.0",
     "cors": "^2.8.4",
     "envkey": "^1.1.2",
     "express": "^4.16.3",
-    "firebase": "^5.3.1",
     "firebase-admin": "^6.0.0",
     "googleapis": "^32.0.0",
     "moment": "^2.22.2",
@@ -17,9 +14,8 @@
     "protobufjs": "^6.8.8"
   },
   "scripts": {
-    "getEnvKey": "curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash",
-    "develop-server": "nodemon server.js",
-    "start": "npm run webhook & npm run develop-server",
+    "start": "node server.js",
+    "develop": "npm run webhook & nodemon server.js",
     "test": "./node_modules/jest/bin/jest.js",
     "webhook": "ultrahook plaidWebHook http://localhost:5000/api/plaidWebHook"
   },
