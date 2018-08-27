@@ -87,8 +87,8 @@ exports.plaidWebHook = async (req, res) => {
 
   if (webHookCode === 'HISTORICAL_UPDATE') {
     console.log('historical webhook');
-    //todo: update accounts
-    //todo: update transactions
+    // todo: update accounts
+    // todo: update transactions
   }
 
   if (webHookCode === 'DEFAULT_UPDATE') {
