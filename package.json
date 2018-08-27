@@ -20,7 +20,7 @@
     "getEnvKey": "curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash",
     "develop-server": "nodemon server.js",
     "start": "npm run webhook & npm run develop-server",
-    "test": "jest",
+    "test": "/node_modules/jest/bin/jest.js",
     "webhook": "ultrahook plaidWebHook http://localhost:5000/api/plaidWebHook"
   },
   "devDependencies": {
