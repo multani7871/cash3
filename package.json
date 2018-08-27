@@ -14,23 +14,13 @@
     "moment": "^2.22.2",
     "morgan": "^1.9.0",
     "plaid": "^2.7.0",
-    "protobufjs": "^6.8.8",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
-    "react-plaid-link": "^1.0.2",
-    "react-router": "^4.3.1",
-    "react-router-dom": "^4.3.1",
-    "react-scripts": "1.1.4"
+    "protobufjs": "^6.8.8"
   },
   "scripts": {
     "getEnvKey": "curl -s https://raw.githubusercontent.com/envkey/envkey-source/master/install.sh | bash",
-    "develop-client": "eval $(envkey-source) && react-scripts start",
     "develop-server": "nodemon server.js",
-    "develop": "npm run webhook & npm run develop-server & npm run develop-client",
-    "start": "npm run build && node server.js",
-    "build": "eval $(./envkey-source-heroku) && react-scripts build",
+    "start": "npm run webhook & npm run develop-server",
     "test": "jest",
-    "eject": "react-scripts eject",
     "webhook": "ultrahook plaidWebHook http://localhost:5000/api/plaidWebHook"
   },
   "devDependencies": {
