@@ -265,3 +265,55 @@ exports.deleteAllAccountsForAnItem = async (itemId) => {
     console.log(error);
   }
 };
+
+exports.addATransactionToItem = async (itemId, transaction) => {
+  await db
+    .collection('items')
+    .doc(itemId)
+    .collection('transactions')
+    .doc(transaction.transaction_id)
+    .set({
+      transaction,
+    })
+    .catch(error => console.log(error));
+};
+
+const getAllItemTransactionsById = async (itemId) => {
+  const transactionIds = [];
+  try {
+    const querySnapshot = await db
+      .collection('items')
+      .doc(itemId)
+      .collection('transactions')
+      .get();
+    querySnapshot.forEach((doc) => {
+      const transactionId = doc.data().transaction.transaction_id;
+      transactionIds.push(transactionId);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  return transactionIds;
+};
+
+const deleteItemTransaction = async (itemId, transactionId) => {
+  await db
+    .collection('items')
+    .doc(itemId)
+    .collection('transactions')
+    .doc(transactionId)
+    .delete()
+    .catch(error => console.log(error));
+};
+
+exports.deleteAllTransactionsForAnItem = async (itemId) => {
+  try {
+    const transactionIdsToDelete = await getAllItemTransactionsById(itemId);
+    const deletionRequests = await transactionIdsToDelete.map(async (transactionId) => {
+      await deleteItemTransaction(itemId, transactionId);
+    });
+    await Promise.all(deletionRequests);
+  } catch (error) {
+    console.log(error);
+  }
+};
