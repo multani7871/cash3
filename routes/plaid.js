@@ -7,10 +7,11 @@ const {
   getAccessToken,
   getAllItemsClient,
   addAccountToItem,
-  getAllItemAccounts,
+  addATransactionToItem,
   // updateItemAccounts,
   deleteAllAccountsForAnItem,
   // deleteItemAccount,
+  deleteAllTransactionsForAnItem,
 } = require('../clients/firestore');
 
 exports.exchangePublicToken = async (req, res) => {
@@ -47,11 +48,23 @@ const handleInitialUpdate = async (itemId) => {
     const accessToken = await getAccessToken(itemId);
     const plaidResponse = await plaidClient.getTransactions(accessToken, thirtyDaysAgo, today);
     const accounts = plaidResponse.accounts;
-    // const transactions = plaidResponse.transactions;
-    const accountsToAdd = accounts.map(async (account) => {
-      await addAccountToItem(itemId, account);
+    const transactions = plaidResponse.transactions;
+    const transactionsToAdd = transactions.map(async (transaction) => {
+      try {
+        await addATransactionToItem(itemId, transaction);
+      } catch (error) {
+        console.log(error);
+      }
     });
-    await Promise.all(accountsToAdd);
+
+    const accountsToAdd = accounts.map(async (account) => {
+      try {
+        await addAccountToItem(itemId, account);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+    await Promise.all([transactionsToAdd, accountsToAdd]);
   } catch (error) {
     console.log(error);
   }
@@ -74,6 +87,16 @@ exports.plaidWebHook = async (req, res) => {
 
   if (webHookCode === 'HISTORICAL_UPDATE') {
     console.log('historical webhook');
+    //todo: update accounts
+    //todo: update transactions
+  }
+
+  if (webHookCode === 'DEFAULT_UPDATE') {
+    console.log('default webhook');
+  }
+
+  if (webHookCode === 'TRANSACTIONS_REMOVED') {
+    console.log('txns removed webhook');
   }
 
   res.status(200).json('req.body');
@@ -85,8 +108,15 @@ const deleteIndividualItem = async (itemId, uid) => {
     const plaidDeletionStatus = await plaidClient.deleteItem(accessToken);
     const nonExistentToken = plaidDeletionStatus.error_code === 'INVALID_ACCESS_TOKEN';
     if (plaidDeletionStatus.deleted || nonExistentToken) {
-      await deleteAllAccountsForAnItem(itemId);
-      await deleteItemFromDB(uid, itemId);
+      try {
+        await Promise.all([
+          deleteAllTransactionsForAnItem(itemId),
+          deleteAllAccountsForAnItem(itemId),
+        ]);
+        await deleteItemFromDB(uid, itemId);
+      } catch (error) {
+        console.log(error);
+      }
     }
   } catch (error) {
     console.log(error);
