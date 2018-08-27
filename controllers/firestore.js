@@ -1,4 +1,4 @@
-const { db } = require('./firebaseClient');
+const { db } = require('../apiClients/firebaseClient');
 
 exports.createNewUser = async (uid, email, OAuthToken) => {
   await db

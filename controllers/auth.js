@@ -1,4 +1,4 @@
-const { firebaseAuth } = require('./firebaseClient');
+const { firebaseAuth } = require('../apiClients/firebaseClient');
 
 exports.verifyIdTokenAndReturnUid = async (idToken) => {
   let uid;
