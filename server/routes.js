@@ -8,14 +8,14 @@ const router = express.Router();
 const morgan = require('morgan');
 const { getUidFromFirebaseToken } = require('./middleware/getUidFromFirebaseToken');
 
-const { createCalendar, deleteCalendar } = require('./routes/calendar');
+const { createCalendar, deleteCalendar } = require('./routeHandlers/calendar');
 const {
   exchangePublicToken,
   plaidWebHook,
   deleteAllItems,
   deleteItem,
   getAllItemsClient,
-} = require('./routes/plaid');
+} = require('./routeHandlers/plaid');
 const {
   createNewUser,
   doesUserExist,
@@ -24,15 +24,15 @@ const {
   getUserCalID,
   deleteUserFromDB,
   // saveRefreshToken,
-} = require('./routes/user');
+} = require('./routeHandlers/user');
 
 router.use(cors);
 router.use(express.static(path.join(__dirname, 'client/build')));
 router.use(express.json());
 router.use(morgan(':url :status'));
 router.use(getUidFromFirebaseToken);
-router.post('/api/getAllItemsClient', getAllItemsClient);
 
+router.post('/api/getAllItemsClient', getAllItemsClient);
 router.post('/api/deleteCalendar', deleteCalendar);
 router.post('/api/createCalendar', createCalendar);
 router.post('/api/exchangePublicToken', exchangePublicToken);
