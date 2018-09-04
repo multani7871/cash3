@@ -1,5 +1,5 @@
-const moment = require('moment');
-const { plaidClient } = require('../apiClients/plaidClient');
+const moment = require("moment");
+const { plaidClient } = require("../apiClients/plaidClient");
 const {
   addItemsToUser,
   getAllItems,
@@ -11,8 +11,8 @@ const {
   // updateItemAccounts,
   deleteAllAccountsForAnItem,
   // deleteItemAccount,
-  deleteAllTransactionsForAnItem,
-} = require('../controllers/firestore');
+  deleteAllTransactionsForAnItem
+} = require("../controllers/firestore");
 
 exports.exchangePublicToken = async (req, res) => {
   const publicToken = req.body.publicToken;
@@ -32,7 +32,7 @@ exports.exchangePublicToken = async (req, res) => {
       institutionId,
       accessToken,
       requestId,
-      webhook,
+      webhook
     );
     res.status(200).send(institutionName);
   } catch (error) {
@@ -40,16 +40,20 @@ exports.exchangePublicToken = async (req, res) => {
   }
 };
 
-const handleInitialUpdate = async (itemId) => {
+const handleInitialUpdate = async itemId => {
   try {
     const now = moment();
-    const today = now.format('YYYY-MM-DD');
-    const thirtyDaysAgo = now.subtract(30, 'days').format('YYYY-MM-DD');
+    const today = now.format("YYYY-MM-DD");
+    const thirtyDaysAgo = now.subtract(30, "days").format("YYYY-MM-DD");
     const accessToken = await getAccessToken(itemId);
-    const plaidResponse = await plaidClient.getTransactions(accessToken, thirtyDaysAgo, today);
+    const plaidResponse = await plaidClient.getTransactions(
+      accessToken,
+      thirtyDaysAgo,
+      today
+    );
     const accounts = plaidResponse.accounts;
     const transactions = plaidResponse.transactions;
-    const transactionsToAdd = transactions.map(async (transaction) => {
+    const transactionsToAdd = transactions.map(async transaction => {
       try {
         await addATransactionToItem(itemId, transaction);
       } catch (error) {
@@ -57,7 +61,7 @@ const handleInitialUpdate = async (itemId) => {
       }
     });
 
-    const accountsToAdd = accounts.map(async (account) => {
+    const accountsToAdd = accounts.map(async account => {
       try {
         await addAccountToItem(itemId, account);
       } catch (error) {
@@ -77,7 +81,11 @@ exports.plaidWebHook = async (req, res) => {
   const webHookCode = req.body.webhook_code;
   const webHookType = req.body.webhook_type;
 
-  if (webHookCode === 'INITIAL_UPDATE') {
+  if (!webHookCode) {
+    console.log('no webhook code provided')
+  }
+
+  if (webHookCode === "INITIAL_UPDATE") {
     try {
       await handleInitialUpdate(itemId);
     } catch (error) {
@@ -85,33 +93,34 @@ exports.plaidWebHook = async (req, res) => {
     }
   }
 
-  if (webHookCode === 'HISTORICAL_UPDATE') {
-    console.log('historical webhook');
+  if (webHookCode === "HISTORICAL_UPDATE") {
+    console.log("historical webhook");
     // todo: update accounts
     // todo: update transactions
   }
 
-  if (webHookCode === 'DEFAULT_UPDATE') {
-    console.log('default webhook');
+  if (webHookCode === "DEFAULT_UPDATE") {
+    console.log("default webhook");
   }
 
-  if (webHookCode === 'TRANSACTIONS_REMOVED') {
-    console.log('txns removed webhook');
+  if (webHookCode === "TRANSACTIONS_REMOVED") {
+    console.log("txns removed webhook");
   }
 
-  res.status(200).json('req.body');
+  res.status(200).json("req.body");
 };
 
 const deleteIndividualItem = async (itemId, uid) => {
   try {
     const accessToken = await getAccessToken(itemId);
     const plaidDeletionStatus = await plaidClient.deleteItem(accessToken);
-    const nonExistentToken = plaidDeletionStatus.error_code === 'INVALID_ACCESS_TOKEN';
+    const nonExistentToken =
+      plaidDeletionStatus.error_code === "INVALID_ACCESS_TOKEN";
     if (plaidDeletionStatus.deleted || nonExistentToken) {
       try {
         await Promise.all([
           deleteAllTransactionsForAnItem(itemId),
-          deleteAllAccountsForAnItem(itemId),
+          deleteAllAccountsForAnItem(itemId)
         ]);
         await deleteItemFromDB(uid, itemId);
       } catch (error) {
@@ -123,11 +132,13 @@ const deleteIndividualItem = async (itemId, uid) => {
   }
 };
 
-const deleteAllItemsHandler = async (uid) => {
+const deleteAllItemsHandler = async uid => {
   let allItems;
   try {
     allItems = await getAllItems(uid);
-    const deletionStatus = allItems.map(async item => deleteIndividualItem(item.itemId, uid));
+    const deletionStatus = allItems.map(async item =>
+      deleteIndividualItem(item.itemId, uid)
+    );
     await Promise.all(deletionStatus);
   } catch (error) {
     console.log(error);
