@@ -1,22 +1,31 @@
 version: '2'
 services:
   web:
-    build: .
+    build: ./client
     command: npm run start
     volumes:
-      - .:/usr/src/app/
-      - /usr/src/app/node_modules
+      - ./client:/usr/src/client/
+      - /usr/src/client/node_modules
     ports:
       - "3000:3000"
     env_file: ./.env
     depends_on:
-      - functions
-  functions:
-    build: ./functions
-    command: ./node_modules/firebase-tools/bin/firebase serve --only functions --host 0.0.0.0 --token ${FIREBASE_FUNCTIONS_CONTAINER_TOKEN}
+      - server
+  # webhook:
+  #   build: ./webhook
+  #   command: ultrahook -k Lv9Lpl22HXUMp7YWHXBOKfxKEaJl29zQ plaidWebHook http://localhost:5000/api/plaidWebHook
+  #   volumes:
+  #     - .:/usr/src/app/
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - "5001:5001"
+  server:
+    build: .
+    command: npm run develop
     volumes:
       - .:/usr/src/app/
       - /usr/src/app/node_modules
+      - ~/.config/:/root/.config
     ports:
       - "5000:5000"
     env_file: ./.env
