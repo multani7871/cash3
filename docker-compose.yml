@@ -11,14 +11,6 @@ services:
     env_file: ./.env
     depends_on:
       - server
-  # webhook:
-  #   build: ./webhook
-  #   command: ultrahook -k Lv9Lpl22HXUMp7YWHXBOKfxKEaJl29zQ plaidWebHook http://localhost:5000/api/plaidWebHook
-  #   volumes:
-  #     - .:/usr/src/app/
-  #     - /usr/src/app/node_modules
-  #   ports:
-  #     - "5001:5001"
   server:
     build: .
     command: npm run develop
