@@ -15,4 +15,5 @@ const firebaseAuth = firebase.auth;
 module.exports = {
   googleProvider,
   firebaseAuth,
+  firebase
 };

@@ -1,8 +1,10 @@
-import { firebaseAuth, googleProvider } from './firebaseClient';
+import { firebaseAuth, googleProvider, firebase } from './firebaseClient';
 
-export function loginWithGoogle() {
-  return firebaseAuth().signInWithRedirect(googleProvider);
+export async function loginWithGoogle() {
+  await firebaseAuth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  await firebaseAuth().signInWithRedirect(googleProvider);
 }
+
 export function logout() {
   return firebaseAuth().signOut();
 }
@@ -25,3 +27,9 @@ export function reloadUser() {
 export async function getIdToken() {
   return firebaseAuth().currentUser.getIdToken(true);
 }
+
+// export async function reauthenticateUser() {
+//   let credential;
+//   return firebaseAuth().currentUser.reauthenticateAndRetrieveDataWithCredential(credential)
+// }
+
