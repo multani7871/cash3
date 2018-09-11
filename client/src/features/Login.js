@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { loginWithGoogle, onAuthStateChanged } from '../helpers/auth';
+import { loginWithGoogle, onAuthStateChanged } from '../controllers/auth';
 // import { saveRefreshToken } from './api';
 
 const firebaseAuthKey = 'firebaseAuthInProgress';

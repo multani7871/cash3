@@ -1,4 +1,4 @@
-import { firebaseAuth, googleProvider, firebase } from './firebaseClient';
+import { firebaseAuth, googleProvider, firebase } from '../apiClients/firebaseClient';
 
 export async function loginWithGoogle() {
   await firebaseAuth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)

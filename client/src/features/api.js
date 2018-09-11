@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { deleteUserFromAuth, getRedirectResult, reloadUser } from '../helpers/auth';
+import { deleteUserFromAuth, getRedirectResult, reloadUser } from '../controllers/auth';
 
 export async function createNewUserAndCalendar(idToken, email, OAuthToken) {
   try {
