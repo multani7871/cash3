@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { deleteUserFromAuth, getRedirectResult, reloadUser } from '../controllers/auth';
+import { deleteUserFromAuth, getRedirectResult, getIdToken } from '../controllers/auth';
 
 export async function createNewUserAndCalendar(idToken, email, OAuthToken) {
   try {
@@ -75,9 +75,9 @@ export async function deleteItemFromApp(idToken, itemId) {
   }
 }
 
-export async function handleDeleteUser(idToken) {
+export async function handleDeleteUser() {
   try {
-    // await getIdToken();
+    const idToken = await getIdToken();
     await deleteUserFromApp(idToken);
     await deleteUserFromAuth();
   } catch (error) {
@@ -113,8 +113,8 @@ export async function deleteAllItems(idToken) {
 }
 
 export async function populateUserItems() {
-  reloadUser();
-  const idToken = this.state.idToken;
+  const idToken = await getIdToken();
+  this.setState({idToken: idToken})
   let request;
   try {
     request = await axios.post('/api/getAllItemsClient', {
