@@ -3,15 +3,15 @@ import PlaidLink from "react-plaid-link";
 import { logout } from "../controllers/auth";
 import Institutions from "./Institutions";
 import Environment from "./Environment";
-import UserAdminPanel from "./UserAdminPanel";
 import {
   exchangePublicToken,
   deleteAllItems,
   populateUserItems,
-  handleExistingAndNewUsers
+  handleExistingAndNewUsers,
+  handleDeleteUser
 } from "./api";
 
-// const idToken = "idToken";
+const idToken = "idToken";
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -57,9 +57,41 @@ export default class Home extends Component {
   }
 
   render() {
+    const idToken = this.state.idToken;
     return (
       <div>
-        <UserAdminPanel idToken={this.state.idToken} />
+        <div>
+          Logged in
+      <button type="submit" onClick={this.handleLogout}>
+            Logout
+      </button>
+          <button
+            type="submit"
+            onClick={async () => {
+              try {
+                await handleDeleteUser(idToken);
+                await this.handleLogout();
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+          >
+            Delete User
+      </button>
+          <button
+            type="submit"
+            onClick={async () => {
+              try {
+                await deleteAllItems(idToken);
+                await this.populateUserItems();
+              } catch (error) {
+                console.log(error);
+              }
+            }}
+          >
+            Delete all items
+      </button>
+        </div>
         <Environment />
         <Institutions idToken={this.state.idToken} userItems={this.state.userItems} />
         <PlaidLink
