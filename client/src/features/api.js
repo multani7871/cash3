@@ -114,7 +114,6 @@ export async function deleteAllItems(idToken) {
 
 export async function populateUserItems() {
   const idToken = await getIdToken();
-  this.setState({idToken: idToken})
   let request;
   try {
     request = await axios.post('/api/getAllItemsClient', {
@@ -124,7 +123,7 @@ export async function populateUserItems() {
     console.log(error);
   }
   const allItems = request.data;
-  this.setState({ userItems: allItems });
+  this.setState({ userItems: allItems, idToken: idToken });
 }
 
 // export async function saveRefreshToken(uid, refreshToken) {
