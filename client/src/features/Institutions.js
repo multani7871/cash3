@@ -1,11 +1,13 @@
 import React from "react";
 import {
   deleteItemFromApp,
+  // populateUserItems
 } from "./api";
 
 const Institutions = (props) => {
   const idToken = props.idToken;
   const userItems = props.userItems;
+  const populateUserItems = props.populateUserItems;
   return (
     <div>
       <ul>
@@ -16,7 +18,7 @@ const Institutions = (props) => {
               onClick={async () => {
                 try {
                   await deleteItemFromApp(idToken, item.itemId);
-                  await this.populateUserItems();
+                  await populateUserItems();
                 } catch (error) {
                   console.log(error);
                 }

@@ -93,7 +93,7 @@ export default class Home extends Component {
       </button>
         </div>
         <Environment />
-        <Institutions idToken={this.state.idToken} userItems={this.state.userItems} />
+        <Institutions idToken={this.state.idToken} userItems={this.state.userItems} populateUserItems={this.populateUserItems} />
         <PlaidLink
           clientName="cashendar"
           env={process.env.REACT_APP_PLAID_ENVIRONMENT}
