@@ -32,20 +32,20 @@ router.use(express.json());
 router.use(morgan(':url :status'));
 router.use(getUidFromFirebaseToken);
 
-router.post('/api/getAllItemsClient', getAllItemsClient);
-router.post('/api/deleteCalendar', deleteCalendar);
-router.post('/api/createCalendar', createCalendar);
-router.post('/api/exchangePublicToken', exchangePublicToken);
-router.post('/api/plaidWebHook', plaidWebHook);
-router.post('/api/deleteAllItems', deleteAllItems);
-router.post('/api/deleteItem', deleteItem);
-router.post('/api/createNewUser', createNewUser);
-router.post('/api/doesUserExist', doesUserExist);
-router.post('/api/getAllItemsClient', getAllItemsClient);
-router.post('/api/updateOAuthToken', updateOAuthToken);
-router.post('/api/getUserOAuthToken', getUserOAuthToken);
-router.post('/api/getUserCalID', getUserCalID);
-router.post('/api/deleteUserFromDB', deleteUserFromDB);
+router.post('/getAllItemsClient', getAllItemsClient);
+router.post('/deleteCalendar', deleteCalendar);
+router.post('/createCalendar', createCalendar);
+router.post('/exchangePublicToken', exchangePublicToken);
+router.post('/plaidWebHook', plaidWebHook);
+router.post('/deleteAllItems', deleteAllItems);
+router.post('/deleteItem', deleteItem);
+router.post('/createNewUser', createNewUser);
+router.post('/doesUserExist', doesUserExist);
+router.post('/getAllItemsClient', getAllItemsClient);
+router.post('/updateOAuthToken', updateOAuthToken);
+router.post('/getUserOAuthToken', getUserOAuthToken);
+router.post('/getUserCalID', getUserCalID);
+router.post('/deleteUserFromDB', deleteUserFromDB);
 // router.post('/api/saveRefreshToken', saveRefreshToken);
 
 router.get('*', (req, res) => {
