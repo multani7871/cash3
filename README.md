@@ -16,3 +16,18 @@ Resources
 1. https://plaid.com/docs/api/
 1. https://firebase.google.com/docs/firestore/
 1. http://www.ultrahook.com/
+
+Todo
+create a single all day event for fixed day -TDD
+Move user admin panel to own component
+deploy container to heroku
+create single all day event when an item is linked
+Show the accounts in the event
+handle account updates
+show the balances in the event
+handle balance updates
+show transactions in the event
+Handle initial update transactions
+handle historical transactions
+handle transaction updates
+transactions sorted from largest to smallest
