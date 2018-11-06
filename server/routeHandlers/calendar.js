@@ -1,11 +1,13 @@
-const { createCalendar, deleteAllCalendars } = require('../controllers/googleCalendar');
-const { addNewCalendarToUser } = require('../controllers/firestore');
+const {
+  createCalendar,
+  deleteAllCalendars
+} = require("../controllers/googleCalendar");
+const { addNewCalendarToUser } = require("../controllers/firestore");
 
 exports.createCalendar = async (req, res) => {
-  const oauthToken = req.body.OAuthToken;
-  const uid = req.body.uid;
+  const { uid, OAuthToken } = req.body;
   try {
-    const result = await createCalendar(oauthToken);
+    const result = await createCalendar(OAuthToken);
     const calendarID = result.id;
     const result2 = await addNewCalendarToUser(uid, calendarID);
     res.status(200).send(result2);
@@ -15,14 +17,13 @@ exports.createCalendar = async (req, res) => {
 };
 
 exports.deleteCalendar = async (req, res) => {
-  const oauthToken = req.body.OAuthToken;
-  const calID = req.body.calID;
+  const { calID, OAuthToken } = req.body;
   if (!calID) {
     res.status(200).send(`${calID} not found`);
   }
   let result;
   try {
-    result = await deleteAllCalendars(oauthToken, calID);
+    result = await deleteAllCalendars(OAuthToken, calID);
     res.status(200).send(`${result} and ${calID} deleted`);
   } catch (error) {
     console.log(error);
