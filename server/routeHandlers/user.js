@@ -4,14 +4,12 @@ const {
   updateOAuthToken,
   getUserOAuthToken,
   getUserCalID,
-  deleteUserFromDB,
+  deleteUserFromDB
   // saveRefreshToken,
-} = require('../controllers/firestore');
+} = require("../controllers/firestore");
 
 exports.createNewUser = async (req, res) => {
-  const uid = req.body.uid;
-  const email = req.body.email;
-  const OAuthToken = req.body.OAuthToken;
+  const { uid, email, OAuthToken } = req.body;
   try {
     await createNewUser(uid, email, OAuthToken);
   } catch (error) {
@@ -21,7 +19,7 @@ exports.createNewUser = async (req, res) => {
 };
 
 exports.doesUserExist = async (req, res) => {
-  const uid = req.body.uid;
+  const { uid } = req.body;
   let exists;
   try {
     exists = await doesUserExist(uid);
@@ -32,8 +30,7 @@ exports.doesUserExist = async (req, res) => {
 };
 
 exports.updateOAuthToken = async (req, res) => {
-  const uid = req.body.uid;
-  const OAuthToken = req.body.OAuthToken;
+  const { uid, OAuthToken } = req.body;
   try {
     await updateOAuthToken(uid, OAuthToken);
   } catch (error) {
@@ -43,7 +40,7 @@ exports.updateOAuthToken = async (req, res) => {
 };
 
 exports.getUserOAuthToken = async (req, res) => {
-  const uid = req.body.uid;
+  const { uid } = req.body;
   let OAuthToken;
   try {
     OAuthToken = await getUserOAuthToken(uid);
@@ -54,7 +51,7 @@ exports.getUserOAuthToken = async (req, res) => {
 };
 
 exports.getUserCalID = async (req, res) => {
-  const uid = req.body.uid;
+  const { uid } = req.body;
   let calID;
   try {
     calID = await getUserCalID(uid);
@@ -65,7 +62,7 @@ exports.getUserCalID = async (req, res) => {
 };
 
 exports.deleteUserFromDB = async (req, res) => {
-  const uid = req.body.uid;
+  const { uid } = req.body;
   try {
     await deleteUserFromDB(uid);
   } catch (error) {
